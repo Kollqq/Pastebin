@@ -1,11 +1,15 @@
-.venv/
+# Python
 __pycache__/
-*.py[cod]
-*.log
+*.pyc
 .env
+.venv/
 db.sqlite3
-/media/
-staticfiles/
+
+# Node
 node_modules/
-build/
 dist/
+
+# Editor/OS
+.idea/
+.vscode/
+.DS_Store
