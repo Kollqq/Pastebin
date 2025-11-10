@@ -26,12 +26,12 @@ export const deletePaste = async (id) => {
 
 export const listLanguages = async () => {
   const { data } = await api.get("/languages/");
-  return data;
+  return Array.isArray(data) ? data : (data?.results ?? []);
 };
 
 export const listStars = async () => {
   const { data } = await api.get("/stars/");
-  return data;
+  return Array.isArray(data) ? data : (data?.results ?? []);
 };
 
 export const addStar = async (pasteId) => {
@@ -41,5 +41,10 @@ export const addStar = async (pasteId) => {
 
 export const getTrending = async () => {
   const { data } = await api.get("/pastes/trending/");
+  return data;
+};
+
+export const getMonthlyStats = async (params = {}) => {
+  const { data } = await api.get("/stats/monthly/", { params });
   return data;
 };

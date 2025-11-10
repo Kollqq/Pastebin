@@ -15,6 +15,7 @@ export default function Navbar() {
     <nav style={{ display: "flex", gap: 12, padding: 8, borderBottom: "1px solid #eee" }}>
       <Link to="/">Pastes</Link>
       <Link to="/trending">Trending</Link>
+      <Link to="/stats">Stats</Link>
       {isAuth && <Link to="/new">New</Link>}
       {isAuth && <Link to="/stars">Stars</Link>}
       <span style={{ flex: 1 }} />
