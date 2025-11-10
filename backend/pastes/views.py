@@ -2,6 +2,7 @@ from django.utils import timezone
 from datetime import datetime
 from django.db.models import Q, Count
 from django.db.models.functions import TruncMonth
+from django_filters import rest_framework as filters
 
 from rest_framework import viewsets, mixins, permissions, decorators, status
 from rest_framework.decorators import api_view, permission_classes
@@ -35,14 +36,28 @@ class LanguageViewSet(
     permission_classes = [AllowAny]
 
 
+class PasteFilter(filters.FilterSet):
+    created_at = filters.DateFromToRangeFilter()
+
+    class Meta:
+        model = Paste
+        fields = {
+            "language": ["exact"],
+            "visibility": ["exact"],
+        }
+
 class PasteViewSet(viewsets.ModelViewSet):
     serializer_class = PasteSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
+    filterset_class = PasteFilter
+    search_fields = ["title", "content", "owner__username"]
+    ordering_fields = ["created_at", "updated_at", "views"]
+    ordering = ["-created_at"]
+
     def get_queryset(self):
         user = self.request.user
         qs = Paste.objects.select_related("owner", "language").all()
-
         if self.action == "list":
             if user.is_authenticated:
                 return qs.filter(Q(visibility=Paste.Visibility.PUBLIC) | Q(owner=user))
