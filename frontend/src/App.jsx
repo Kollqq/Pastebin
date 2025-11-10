@@ -8,6 +8,7 @@ import PasteDetailPage from "./pages/PasteDetailPage.jsx";
 import PasteFormPage from "./pages/PasteFormPage.jsx";
 import StarsPage from "./pages/StarsPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import TrendingPage from "./pages/TrendingPage";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<PasteListPage />} />
           <Route path="/pastes/:id" element={<PasteDetailPage />} />
+          <Route path="/trending" element={<TrendingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route

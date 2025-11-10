@@ -38,3 +38,8 @@ export const addStar = async (pasteId) => {
   const { data } = await api.post("/stars/", { paste: pasteId });
   return data;
 };
+
+export const getTrending = async () => {
+  const { data } = await api.get("/pastes/trending/");
+  return data;
+};

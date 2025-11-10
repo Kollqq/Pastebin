@@ -10,4 +10,59 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+let isRefreshing = false;
+let pendingQueue = [];
+
+async function processQueue(error, token = null) {
+  pendingQueue.forEach(({ resolve, reject }) => {
+    if (token) resolve(token);
+    else reject(error);
+  });
+  pendingQueue = [];
+}
+
+api.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const original = error.config;
+    if (error.response?.status === 401 && !original._retry) {
+      const refresh = localStorage.getItem("refresh");
+      if (!refresh) {
+        localStorage.removeItem("access");
+        return Promise.reject(error);
+      }
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          pendingQueue.push({
+            resolve: (token) => {
+              original.headers.Authorization = `Bearer ${token}`;
+              resolve(api(original));
+            },
+            reject,
+          });
+        });
+      }
+
+      original._retry = true;
+      isRefreshing = true;
+      try {
+        const { data } = await axios.post("http://127.0.0.1:8000/api/auth/token/refresh/", { refresh });
+        localStorage.setItem("access", data.access);
+        await processQueue(null, data.access);
+        original.headers.Authorization = `Bearer ${data.access}`;
+        return api(original);
+      } catch (e) {
+        await processQueue(e, null);
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        return Promise.reject(e);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;
