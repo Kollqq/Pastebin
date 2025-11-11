@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 export default function NotFound() {
   return (
-    <div>
-      <h2>404 — Not found</h2>
-      <p>Страница не существует.</p>
-      <Link to="/">На главную</Link>
-    </div>
+    <section className="form-card glass-card centered-card">
+      <h2>404 — Страница не найдена</h2>
+      <p>Похоже, вы попали в пустоту. Вернитесь на главную страницу.</p>
+      <Link to="/" className="btn primary">На главную</Link>
+    </section>
   );
 }

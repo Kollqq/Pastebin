@@ -22,12 +22,15 @@ export default function LoginPage() {
   }
 
   return (
-    <form onSubmit={submit} style={{ display: "grid", gap: 8, maxWidth: 360 }}>
-      <h2>Login</h2>
+    <form onSubmit={submit} className="form-card glass-card">
+      <div className="form-header">
+        <h2>С возвращением</h2>
+        <p>Войдите, чтобы управлять своими пастами и отслеживать статистику.</p>
+      </div>
       <input placeholder="username" value={username} onChange={(e)=>setUsername(e.target.value)} />
       <input placeholder="password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />
-      {err && <div style={{ color: "red" }}>{err}</div>}
-      <button>Sign in</button>
+      {err && <div className="form-error">{err}</div>}
+      <button className="btn primary">Sign in</button>
     </form>
   );
 }

@@ -47,27 +47,32 @@ export default function PasteFormPage({ edit }) {
   }
 
   return (
-    <form onSubmit={submit} style={{ display: "grid", gap: 10 }}>
-      <h2>{edit ? "Edit paste" : "New paste"}</h2>
+    <form onSubmit={submit} className="form-card glass-card form-editor">
+      <div className="form-header">
+        <h2>{edit ? "Редактирование пасты" : "Новая паста"}</h2>
+        <p>Добавьте описание, код и выберите видимость, чтобы поделиться с миром.</p>
+      </div>
       <input name="title" placeholder="title" value={form.title} onChange={onChange} />
-      <textarea name="content" rows={10} placeholder="content" value={form.content} onChange={onChange} />
-      <label>
-        Language:
-        <select name="language_id" value={form.language_id ?? "null"} onChange={onChange}>
-          <option value="null">— none —</option>
-          {(langs || []).map((l) => (
-            <option key={l.id} value={l.id}>{l.name}</option>
-          ))}
-        </select>
-      </label>
-      <label>
-        Visibility:
-        <select name="visibility" value={form.visibility} onChange={onChange}>
-          <option value="public">public</option>
-          <option value="unlisted">unlisted</option>
-          <option value="private">private</option>
-        </select>
-      </label>
+      <textarea name="content" rows={12} placeholder="content" value={form.content} onChange={onChange} />
+      <div className="form-row">
+        <label>
+          <span>Language</span>
+          <select name="language_id" value={form.language_id ?? "null"} onChange={onChange}>
+            <option value="null">— none —</option>
+            {(langs || []).map((l) => (
+              <option key={l.id} value={l.id}>{l.name}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>Visibility</span>
+          <select name="visibility" value={form.visibility} onChange={onChange}>
+            <option value="public">public</option>
+            <option value="unlisted">unlisted</option>
+            <option value="private">private</option>
+          </select>
+        </label>
+      </div>
       <button className="btn primary">{edit ? "Save" : "Create"}</button>
     </form>
   );

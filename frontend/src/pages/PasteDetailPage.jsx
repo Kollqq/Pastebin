@@ -87,31 +87,41 @@ export default function PasteDetailPage() {
   }
 
   return (
-      <div>
-        <h2>{paste.title || `Paste #${paste.id}`}</h2>
-        <p><b>Language:</b> {paste.language?.name || "—"}</p>
-        <p><b>Visibility:</b> {paste.visibility}</p>
+    <section className="glass-card detail-card">
+      <header className="detail-header">
+        <div>
+          <h1>{paste.title || `Paste #${paste.id}`}</h1>
+          <div className="detail-meta">
+            <span>{paste.language?.name || "—"}</span>
+            <span className="badge">{paste.visibility}</span>
+            {paste.owner_username && <span>by {paste.owner_username}</span>}
+          </div>
+        </div>
+        <div className="detail-actions">
+          <button onClick={star} className="btn ghost" aria-label="Add to stars">☆ В избранное</button>
+          <Link to={`/edit/${paste.id}`} className="btn ghost">Edit</Link>
+          <button onClick={remove} className="btn danger" aria-label="Delete paste">Delete</button>
+        </div>
+      </header>
 
-        <div className="codebar">
-          <button onClick={copy} className="btn" aria-label="Copy code">
+      <div className="code-toolbar">
+        <div className="code-toolbar-left">
+          <button onClick={copy} className="btn secondary" aria-label="Copy code">
             {copied ? "Copied!" : "Copy"}
           </button>
-          <button onClick={() => setWrap((w) => !w)} className="btn" aria-label="Toggle wrap">
+          <button onClick={() => setWrap((w) => !w)} className="btn secondary" aria-label="Toggle wrap">
             {wrap ? "Disable wrap" : "Enable wrap"}
           </button>
-          <button onClick={download} className="btn" aria-label="Download code">Download</button>
-          <span style={{marginLeft: 8, color: "#666"}}>
-            {hlLang ? `highlight: ${hlLang}` : "auto-detect"}
-          </span>
+          <button onClick={download} className="btn secondary" aria-label="Download code">Download</button>
         </div>
+        <span className="code-toolbar-meta">
+          {hlLang ? `highlight: ${hlLang}` : "auto-detect"}
+        </span>
+      </div>
 
-        <pre className="codebox" style={{whiteSpace: wrap ? "pre-wrap" : "pre"}}>
+      <pre className="codebox" style={{whiteSpace: wrap ? "pre-wrap" : "pre"}}>
         <code ref={codeRef}>{paste.content}</code>
       </pre>
-
-        <button onClick={star} className="btn" aria-label="Add to stars">☆ Add to stars</button>{" "}
-        <Link to={`/edit/${paste.id}`}>Edit</Link>{" "}
-        <button onClick={remove} className="btn" aria-label="Delete paste">Delete</button>
-      </div>
+    </section>
   );
 }

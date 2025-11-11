@@ -19,26 +19,26 @@ export default function Pagination({ page, totalPages, onChange }) {
   }
 
   return (
-    <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 12 }}>
-      <button onClick={() => go(page - 1)} disabled={page <= 1}>Prev</button>
+    <div className="pagination">
+      <button className="btn ghost" onClick={() => go(page - 1)} disabled={page <= 1}>
+        Prev
+      </button>
       {pages.map((p, i) =>
         p === "..." ? (
-          <span key={`e${i}`}>…</span>
+          <span key={`e${i}`} className="pagination-ellipsis">…</span>
         ) : (
           <button
             key={p}
             onClick={() => go(p)}
-            style={{
-              fontWeight: p === page ? 700 : 400,
-              textDecoration: p === page ? "underline" : "none",
-              padding: "2px 6px"
-            }}
+            className={`btn ghost pagination-page${p === page ? " active" : ""}`}
           >
             {p}
           </button>
         )
       )}
-      <button onClick={() => go(page + 1)} disabled={page >= totalPages}>Next</button>
+      <button className="btn ghost" onClick={() => go(page + 1)} disabled={page >= totalPages}>
+        Next
+      </button>
     </div>
   );
 }
