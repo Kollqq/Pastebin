@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { getMonthlyStats } from "../api/pastes";
+import Spinner from "../components/Spinner";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
@@ -23,7 +24,7 @@ export default function StatsPage(){
       const res = await getMonthlyStats({ start, end });
       setData([...res].sort((a,b)=> a.month.localeCompare(b.month)));
     }catch(e){
-      console.error(e); setErr("Не удалось загрузить статистику");
+      console.error(e); setErr("Failed to load statistics");
       setData([]);
     }finally{ setLoading(false); }
   }
@@ -47,8 +48,8 @@ export default function StatsPage(){
       </form>
 
       {err && <div style={{color:"red", marginBottom:12}}>{err}</div>}
-      {loading ? <div>Loading...</div> : data.length === 0 ? (
-        <div>Нет данных за выбранный период</div>
+      {loading ? <Spinner /> : data.length === 0 ? (
+        <div>No data for the selected period</div>
       ) : (
         <div style={{width:"100%", height:360}}>
           <ResponsiveContainer>

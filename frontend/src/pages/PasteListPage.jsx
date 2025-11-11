@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { listPastes, listLanguages } from "../api/pastes";
 import Pagination from "../components/Pagination";
+import Spinner from "../components/Spinner";
 
 function toInt(v, def) {
   const n = Number(v);
@@ -35,7 +36,9 @@ export default function PasteListPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    listLanguages().then((data) => setLangs(Array.isArray(data) ? data : [])).catch(()=>setLangs([]));
+    listLanguages()
+      .then((data) => setLangs(Array.isArray(data) ? data : []))
+      .catch(() => setLangs([]));
   }, []);
 
   async function load(params) {
@@ -66,15 +69,9 @@ export default function PasteListPage() {
 
   function applyFilters(e) {
     e?.preventDefault?.();
-    const next = {
-      ...form,
-      page: 1,
-      page_size: pageSize,
-    };
+    const next = { ...form, page: 1, page_size: pageSize };
     const sp = new URLSearchParams();
-    Object.entries(next).forEach(([k, v]) => {
-      if (v !== "" && v != null) sp.set(k, v);
-    });
+    Object.entries(next).forEach(([k, v]) => { if (v !== "" && v != null) sp.set(k, v); });
     setSearchParams(sp);
     setPage(1);
     load(next);
@@ -102,23 +99,23 @@ export default function PasteListPage() {
     <div>
       <h2>Pastes</h2>
 
-      <form onSubmit={applyFilters} style={{ display: "grid", gap: 8, gridTemplateColumns: "1fr 160px 160px 180px 110px auto", alignItems: "center" }}>
+      <form onSubmit={applyFilters} className="toolbar">
         <input
           placeholder="search in title/content/owner"
           value={form.search}
           onChange={(e) => setForm({ ...form, search: e.target.value })}
         />
-        <select value={form.language} onChange={(e)=>setForm({ ...form, language: e.target.value })}>
+        <select value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })}>
           <option value="">Language: any</option>
-          {(langs || []).map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+          {(langs || []).map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
         </select>
-        <select value={form.visibility} onChange={(e)=>setForm({ ...form, visibility: e.target.value })}>
+        <select value={form.visibility} onChange={(e) => setForm({ ...form, visibility: e.target.value })}>
           <option value="">Visibility: any</option>
           <option value="public">public</option>
           <option value="unlisted">unlisted</option>
           <option value="private">private</option>
         </select>
-        <select value={form.ordering} onChange={(e)=>setForm({ ...form, ordering: e.target.value })}>
+        <select value={form.ordering} onChange={(e) => setForm({ ...form, ordering: e.target.value })}>
           <option value="-created_at">Newest</option>
           <option value="created_at">Oldest</option>
           <option value="-views">Most viewed</option>
@@ -126,7 +123,7 @@ export default function PasteListPage() {
           <option value="-updated_at">Recently updated</option>
           <option value="updated_at">Least recently updated</option>
         </select>
-        <select value={pageSize} onChange={(e)=>setPageSize(toInt(e.target.value, 10))}>
+        <select value={pageSize} onChange={(e) => setPageSize(toInt(e.target.value, 10))}>
           <option value={5}>5 / page</option>
           <option value={10}>10 / page</option>
           <option value={20}>20 / page</option>
@@ -136,11 +133,11 @@ export default function PasteListPage() {
       </form>
 
       {loading ? (
-        <div>Loading...</div>
+        <Spinner />
       ) : (
         <>
-          <ul style={{ marginTop: 12 }}>
-            {items.map(p => (
+          <ul>
+            {items.map((p) => (
               <li key={p.id}>
                 <Link to={`/pastes/${p.id}`}>
                   {p.title || `Paste #${p.id}`} — {p.owner_username} ({p.visibility})

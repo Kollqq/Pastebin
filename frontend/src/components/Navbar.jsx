@@ -12,13 +12,13 @@ export default function Navbar() {
   }
 
   return (
-    <nav style={{ display: "flex", gap: 12, padding: 8, borderBottom: "1px solid #eee" }}>
+    <div className="navbar">
       <Link to="/">Pastes</Link>
       <Link to="/trending">Trending</Link>
       <Link to="/stats">Stats</Link>
       {isAuth && <Link to="/new">New</Link>}
       {isAuth && <Link to="/stars">Stars</Link>}
-      <span style={{ flex: 1 }} />
+      <span className="spacer" />
       {!isAuth ? (
         <>
           <Link to="/login">Login</Link>
@@ -27,6 +27,6 @@ export default function Navbar() {
       ) : (
         <button onClick={logout}>Logout</button>
       )}
-    </nav>
+    </div>
   );
 }
