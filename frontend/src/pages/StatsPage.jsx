@@ -34,24 +34,36 @@ export default function StatsPage(){
   function onSubmit(e){ e.preventDefault(); load(); }
 
   return (
-    <div>
-      <h2>Monthly stats</h2>
+    <section className="page">
+      <div className="page-header">
+        <div>
+          <h1>Статистика</h1>
+          <p className="page-subtitle">Анализируйте активность за выбранный период.</p>
+        </div>
+      </div>
 
-      <form onSubmit={onSubmit} style={{display: "flex", gap: 12, alignItems: "center", marginBottom: 16}}>
-        <label>Start:
+      <form onSubmit={onSubmit} className="stats-filter glass-card">
+        <label>
+          <span>Start</span>
           <input type="month" value={start} onChange={(e) => setStart(e.target.value)}/>
         </label>
-        <label>End:
+        <label>
+          <span>End</span>
           <input type="month" value={end} onChange={(e) => setEnd(e.target.value)}/>
         </label>
-        <button className="btn">Apply</button>
+        <button className="btn primary">Apply</button>
       </form>
 
-      {err && <div style={{color: "red", marginBottom:12}}>{err}</div>}
-      {loading ? <Spinner /> : data.length === 0 ? (
-        <div>No data for the selected period</div>
+      {err && <div className="form-error" style={{ textAlign: "left" }}>{err}</div>}
+
+      {loading ? (
+        <div className="page-loading">
+          <Spinner size={32} />
+        </div>
+      ) : data.length === 0 ? (
+        <div className="empty-card glass-card">No data for the selected period</div>
       ) : (
-        <div style={{width:"100%", height:360}}>
+        <div className="chart-card glass-card">
           <ResponsiveContainer>
             <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -65,6 +77,6 @@ export default function StatsPage(){
           </ResponsiveContainer>
         </div>
       )}
-    </div>
+    </section>
   );
 }

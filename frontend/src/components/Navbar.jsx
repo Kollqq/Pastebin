@@ -14,35 +14,43 @@ export default function Navbar() {
   }
 
   return (
-    <div className="navbar">
-      <Link to="/">Pastes</Link>
-      <Link to="/trending">Trending</Link>
-      <Link to="/stats">Stats</Link>
-      {isAuth && <Link to="/new">New</Link>}
-      {isAuth && <Link to="/stars">Stars</Link>}
-      <span className="spacer" />
+    <header className="navbar glass-card">
+      <Link to="/" className="navbar-brand" aria-label="Go to home page">
+        <span className="brand-mark">⌘</span>
+        <span className="brand-text">Pastebin</span>
+      </Link>
 
-      <label aria-label="Theme selector" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontSize: 12, opacity: .8 }}>Theme:</span>
-        <select
-          value={theme}
-          onChange={(e) => setTheme(e.target.value)}
-          aria-label="Select color theme"
-        >
-          <option value="system">system</option>
-          <option value="light">light</option>
-          <option value="dark">dark</option>
-        </select>
-      </label>
+      <nav className="navbar-links" aria-label="Primary">
+        <Link to="/" className="nav-link">Pastes</Link>
+        <Link to="/trending" className="nav-link">Trending</Link>
+        <Link to="/stats" className="nav-link">Stats</Link>
+        {isAuth && <Link to="/new" className="nav-link">New</Link>}
+        {isAuth && <Link to="/stars" className="nav-link">Stars</Link>}
+      </nav>
 
-      {!isAuth ? (
-        <>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-        </>
-      ) : (
-        <button onClick={logout} className="btn">Logout</button>
-      )}
-    </div>
+      <div className="navbar-actions">
+        <label className="theme-switcher">
+          <span>Theme</span>
+          <select
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+            aria-label="Select color theme"
+          >
+            <option value="system">system</option>
+            <option value="light">light</option>
+            <option value="dark">dark</option>
+          </select>
+        </label>
+
+        {!isAuth ? (
+          <div className="navbar-auth">
+            <Link to="/login" className="btn ghost">Login</Link>
+            <Link to="/register" className="btn primary">Sign up</Link>
+          </div>
+        ) : (
+          <button onClick={logout} className="btn primary">Logout</button>
+        )}
+      </div>
+    </header>
   );
 }

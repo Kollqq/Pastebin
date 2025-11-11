@@ -26,13 +26,16 @@ export default function RegisterPage() {
   }
 
   return (
-    <form onSubmit={submit} style={{ display: "grid", gap: 8, maxWidth: 360 }}>
-      <h2>Register</h2>
+    <form onSubmit={submit} className="form-card glass-card">
+      <div className="form-header">
+        <h2>Создайте аккаунт</h2>
+        <p>Получите быстрый доступ к избранным пастам и расширенным возможностям.</p>
+      </div>
       <input name="username" placeholder="username" value={form.username} onChange={onChange} />
       <input name="email" placeholder="email" value={form.email} onChange={onChange} />
       <input name="password" placeholder="password" type="password" value={form.password} onChange={onChange} />
-      {err && <div style={{ color: "red" }}>{err}</div>}
-      <button>Create account</button>
+      {err && <div className="form-error">{err}</div>}
+      <button className="btn primary">Create account</button>
     </form>
   );
 }
