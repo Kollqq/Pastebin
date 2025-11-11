@@ -9,6 +9,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.exceptions import ValidationError
 
 from .models import Language, Paste, Comment, Star, ViewEvent
 from .serializers import (
@@ -35,6 +38,13 @@ class LanguageViewSet(
     serializer_class = LanguageSerializer
     permission_classes = [AllowAny]
 
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "pastes_read"  # лёгкие публичные чтения
+
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ["name", "slug"]
+    ordering_fields = ["name", "id"]
+    ordering = ["name"]
 
 class PasteFilter(filters.FilterSet):
     created_at = filters.DateFromToRangeFilter()
@@ -48,11 +58,17 @@ class PasteFilter(filters.FilterSet):
 
 class PasteViewSet(viewsets.ModelViewSet):
     serializer_class = PasteSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    throttle_classes = [ScopedRateThrottle]
+    def get_throttle_scopes(self):
+        if self.action in ("list", "retrieve", "trending"):
+            return ["pastes_read"]
+        return ["pastes_write"]
 
     filterset_class = PasteFilter
     search_fields = ["title", "content", "owner__username"]
-    ordering_fields = ["created_at", "updated_at", "views"]
+    ordering_fields = ["created_at", "updated_at", "views", "title"]
     ordering = ["-created_at"]
 
     def get_queryset(self):
@@ -69,13 +85,10 @@ class PasteViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         obj = self.get_object()
-
         if obj.visibility == Paste.Visibility.PRIVATE and obj.owner_id != request.user.id:
             return Response(status=status.HTTP_403_FORBIDDEN)
-
         obj.views = (obj.views or 0) + 1
         obj.save(update_fields=["views"])
-
         return super().retrieve(request, *args, **kwargs)
 
     @decorators.action(detail=False, methods=["GET"], permission_classes=[AllowAny])
@@ -94,6 +107,10 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
+    throttle_classes = [ScopedRateThrottle]
+    def get_throttle_scopes(self):
+        return ["pastes_read"] if self.action in ("list", "retrieve") else ["pastes_write"]
+
     def get_queryset(self):
         return Comment.objects.select_related("paste", "author").all()
 
@@ -101,71 +118,80 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
+
 class StarViewSet(viewsets.ModelViewSet):
     serializer_class = StarSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ["get", "post", "delete"]  # PUT/PATCH не нужны
+
+    throttle_classes = [ScopedRateThrottle]
+    def get_throttle_scopes(self):
+        return ["pastes_read"] if self.action in ("list", "retrieve") else ["pastes_write"]
 
     def get_queryset(self):
-        return Star.objects.select_related("paste", "user").filter(user=self.request.user)
+        return (
+            Star.objects
+            .select_related("paste", "user")
+            .filter(user=self.request.user)
+        )
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
 
 def _parse_yyyy_mm(s: str):
     return datetime.strptime(s, "%Y-%m")
 
 def _first_day_next_month(dt: datetime) -> datetime:
-    year, month = dt.year, dt.month
-    if month == 12:
-        return datetime(year + 1, 1, 1)
-    return datetime(year, month + 1, 1)
+    y, m = dt.year, dt.month
+    return datetime(y + 1, 1, 1) if m == 12 else datetime(y, m + 1, 1)
 
 class MonthlyStatsView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "pastes_read"
 
     def get(self, request):
         user = request.user
 
         start_str = request.query_params.get("start")
-        end_str = request.query_params.get("end")
+        end_str   = request.query_params.get("end")
 
-        start_dt_naive = _parse_yyyy_mm(start_str) if start_str else None
-        end_dt_naive = _parse_yyyy_mm(end_str) if end_str else None
+        try:
+            start_dt_naive = _parse_yyyy_mm(start_str) if start_str else None
+            end_dt_naive   = _parse_yyyy_mm(end_str)   if end_str   else None
+        except ValueError:
+            raise ValidationError({"detail": "Invalid date format. Use YYYY-MM."})
+
+        if start_dt_naive and end_dt_naive and start_dt_naive > end_dt_naive:
+            raise ValidationError({"detail": "start must be <= end."})
 
         start_dt = timezone.make_aware(start_dt_naive) if start_dt_naive else None
-        end_exclusive = None
-        if end_dt_naive:
-            end_exclusive = timezone.make_aware(_first_day_next_month(end_dt_naive))
+        end_exclusive = timezone.make_aware(_first_day_next_month(end_dt_naive)) if end_dt_naive else None
 
         paste_qs = Paste.objects.filter(owner=user)
-        view_qs = ViewEvent.objects.filter(paste__owner=user)
+        view_qs  = ViewEvent.objects.filter(paste__owner=user)
 
         if start_dt:
             paste_qs = paste_qs.filter(created_at__gte=start_dt)
-            view_qs = view_qs.filter(viewed_at__gte=start_dt)
+            view_qs  = view_qs.filter(viewed_at__gte=start_dt)
         if end_exclusive:
             paste_qs = paste_qs.filter(created_at__lt=end_exclusive)
-            view_qs = view_qs.filter(viewed_at__lt=end_exclusive)
+            view_qs  = view_qs.filter(viewed_at__lt=end_exclusive)
 
         created = (
-            paste_qs
-            .annotate(month=TruncMonth("created_at"))
-            .values("month")
-            .annotate(pastes=Count("id"))
-            .order_by("month")
+            paste_qs.annotate(month=TruncMonth("created_at"))
+                    .values("month")
+                    .annotate(pastes=Count("id"))
+                    .order_by("month")
         )
-
         viewed = (
-            view_qs
-            .annotate(month=TruncMonth("viewed_at"))
-            .values("month")
-            .annotate(views=Count("id"))
-            .order_by("month")
+            view_qs.annotate(month=TruncMonth("viewed_at"))
+                   .values("month")
+                   .annotate(views=Count("id"))
+                   .order_by("month")
         )
 
         index = {}
-
         for row in created:
             key = row["month"].strftime("%Y-%m")
             index.setdefault(key, {"month": key, "pastes": 0, "views": 0})
@@ -177,4 +203,4 @@ class MonthlyStatsView(APIView):
             index[key]["views"] = row["views"]
 
         data = [index[k] for k in sorted(index.keys())]
-        return Response(data)
+        return Response(data, status=status.HTTP_200_OK)
