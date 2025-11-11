@@ -129,11 +129,11 @@ export default function PasteListPage() {
           <option value={20}>20 / page</option>
           <option value={50}>50 / page</option>
         </select>
-        <button>Apply</button>
+        <button className="btn primary">Apply</button>
       </form>
 
       {loading ? (
-        <Spinner />
+          <Spinner />
       ) : (
         <>
           <ul>

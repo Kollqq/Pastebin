@@ -87,29 +87,31 @@ export default function PasteDetailPage() {
   }
 
   return (
-    <div>
-      <h2>{paste.title || `Paste #${paste.id}`}</h2>
-      <p><b>Language:</b> {paste.language?.name || "—"}</p>
-      <p><b>Visibility:</b> {paste.visibility}</p>
+      <div>
+        <h2>{paste.title || `Paste #${paste.id}`}</h2>
+        <p><b>Language:</b> {paste.language?.name || "—"}</p>
+        <p><b>Visibility:</b> {paste.visibility}</p>
 
-      <div className="codebar">
-        <button onClick={copy}>{copied ? "Copied!" : "Copy"}</button>
-        <button onClick={() => setWrap((w) => !w)}>
-          {wrap ? "Disable wrap" : "Enable wrap"}
-        </button>
-        <button onClick={download}>Download</button>
-        <span style={{ marginLeft: 8, color: "#666" }}>
-          {hlLang ? `highlight: ${hlLang}` : "auto-detect"}
-        </span>
-      </div>
+        <div className="codebar">
+          <button onClick={copy} className="btn" aria-label="Copy code">
+            {copied ? "Copied!" : "Copy"}
+          </button>
+          <button onClick={() => setWrap((w) => !w)} className="btn" aria-label="Toggle wrap">
+            {wrap ? "Disable wrap" : "Enable wrap"}
+          </button>
+          <button onClick={download} className="btn" aria-label="Download code">Download</button>
+          <span style={{marginLeft: 8, color: "#666"}}>
+            {hlLang ? `highlight: ${hlLang}` : "auto-detect"}
+          </span>
+        </div>
 
-      <pre className="codebox" style={{ whiteSpace: wrap ? "pre-wrap" : "pre" }}>
+        <pre className="codebox" style={{whiteSpace: wrap ? "pre-wrap" : "pre"}}>
         <code ref={codeRef}>{paste.content}</code>
       </pre>
 
-      <button onClick={star}>☆ Add to stars</button>{" "}
-      <Link to={`/edit/${paste.id}`}>Edit</Link>{" "}
-      <button onClick={remove}>Delete</button>
-    </div>
+        <button onClick={star} className="btn" aria-label="Add to stars">☆ Add to stars</button>{" "}
+        <Link to={`/edit/${paste.id}`}>Edit</Link>{" "}
+        <button onClick={remove} className="btn" aria-label="Delete paste">Delete</button>
+      </div>
   );
 }

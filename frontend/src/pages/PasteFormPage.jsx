@@ -68,7 +68,7 @@ export default function PasteFormPage({ edit }) {
           <option value="private">private</option>
         </select>
       </label>
-      <button>{edit ? "Save" : "Create"}</button>
+      <button className="btn primary">{edit ? "Save" : "Create"}</button>
     </form>
   );
 }

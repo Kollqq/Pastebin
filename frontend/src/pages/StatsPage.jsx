@@ -37,17 +37,17 @@ export default function StatsPage(){
     <div>
       <h2>Monthly stats</h2>
 
-      <form onSubmit={onSubmit} style={{display:"flex", gap:12, alignItems:"center", marginBottom:16}}>
+      <form onSubmit={onSubmit} style={{display: "flex", gap: 12, alignItems: "center", marginBottom: 16}}>
         <label>Start:
-          <input type="month" value={start} onChange={(e)=>setStart(e.target.value)} />
+          <input type="month" value={start} onChange={(e) => setStart(e.target.value)}/>
         </label>
         <label>End:
-          <input type="month" value={end} onChange={(e)=>setEnd(e.target.value)} />
+          <input type="month" value={end} onChange={(e) => setEnd(e.target.value)}/>
         </label>
-        <button>Apply</button>
+        <button className="btn">Apply</button>
       </form>
 
-      {err && <div style={{color:"red", marginBottom:12}}>{err}</div>}
+      {err && <div style={{color: "red", marginBottom:12}}>{err}</div>}
       {loading ? <Spinner /> : data.length === 0 ? (
         <div>No data for the selected period</div>
       ) : (
