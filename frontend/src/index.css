@@ -21,6 +21,15 @@ html, body, #root {
   --border: rgba(148, 163, 184, 0.28);
   --card: rgba(15, 23, 42, 0.72);
   --card-solid: #15213b;
+  --code-surface: #0f172a;
+  --code-border: rgba(148, 163, 184, 0.35);
+  --hl-text: #e5edff;
+  --hl-muted: #9ca3af;
+  --hl-keyword: #a5b4ff;
+  --hl-string: #9ae6b4;
+  --hl-number: #fbbf24;
+  --hl-function: #7dd3fc;
+  --hl-property: #f472b6;
   --accent: #60a5fa;
   --accent-strong: #3b82f6;
   --accent-soft: rgba(96, 165, 250, 0.14);
@@ -41,6 +50,15 @@ html, body, #root {
     --border: rgba(148, 163, 184, 0.35);
     --card: rgba(255, 255, 255, 0.86);
     --card-solid: #ffffff;
+    --code-surface: #f8f9ff;
+    --code-border: rgba(148, 163, 184, 0.5);
+    --hl-text: #111827;
+    --hl-muted: #6b7280;
+    --hl-keyword: #4338ca;
+    --hl-string: #15803d;
+    --hl-number: #b45309;
+    --hl-function: #0ea5e9;
+    --hl-property: #c026d3;
     --accent: #3b82f6;
     --accent-strong: #2563eb;
     --accent-soft: rgba(37, 99, 235, 0.12);
@@ -73,6 +91,15 @@ body {
   --border: rgba(148, 163, 184, 0.28);
   --card: rgba(15, 23, 42, 0.72);
   --card-solid: #15213b;
+  --code-surface: #0f172a;
+  --code-border: rgba(148, 163, 184, 0.35);
+  --hl-text: #e5edff;
+  --hl-muted: #9ca3af;
+  --hl-keyword: #a5b4ff;
+  --hl-string: #9ae6b4;
+  --hl-number: #fbbf24;
+  --hl-function: #7dd3fc;
+  --hl-property: #f472b6;
   --accent: #60a5fa;
   --accent-strong: #3b82f6;
   --accent-soft: rgba(96, 165, 250, 0.14);
@@ -89,6 +116,15 @@ body {
   --border: rgba(148, 163, 184, 0.35);
   --card: rgba(255, 255, 255, 0.86);
   --card-solid: #ffffff;
+  --code-surface: #f8f9ff;
+  --code-border: rgba(148, 163, 184, 0.5);
+  --hl-text: #111827;
+  --hl-muted: #6b7280;
+  --hl-keyword: #4338ca;
+  --hl-string: #15803d;
+  --hl-number: #b45309;
+  --hl-function: #0ea5e9;
+  --hl-property: #c026d3;
   --accent: #3b82f6;
   --accent-strong: #2563eb;
   --accent-soft: rgba(37, 99, 235, 0.12);
@@ -714,20 +750,50 @@ textarea:focus-visible {
 
 pre.codebox {
   margin: 0;
-  background: var(--card-solid);
-  border: 1px solid var(--border);
+  background: var(--code-surface);
+  border: 1px solid var(--code-border);
   border-radius: var(--radius-md);
   padding: 18px;
   overflow: auto;
   font-size: 0.92rem;
   line-height: 1.5;
   max-height: 70vh;
+  color: var(--hl-text);
 }
 
 pre.codebox .hljs {
   background: transparent !important;
-  color: var(--fg);
+  color: var(--hl-text);
 }
+
+.hljs-comment,
+.hljs-quote { color: var(--hl-muted); font-style: italic; }
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-doctag { color: var(--hl-keyword); font-weight: 600; }
+
+.hljs-string,
+.hljs-title,
+.hljs-name,
+.hljs-type,
+.hljs-attribute { color: var(--hl-string); }
+
+.hljs-number,
+.hljs-literal { color: var(--hl-number); }
+
+.hljs-built_in,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta { color: var(--hl-function); }
+
+.hljs-section,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-template-variable,
+.hljs-variable,
+.hljs-attr { color: var(--hl-property); }
 
 .pagination {
   display: flex;
