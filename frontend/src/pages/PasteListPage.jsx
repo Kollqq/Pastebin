@@ -98,24 +98,24 @@ export default function PasteListPage() {
 
   const languageOptions = useMemo(
     () => [
-      { value: "", label: "Язык: любой" },
+      { value: "", label: "Язык:" },
       ...(langs || []).map((l) => ({ value: String(l.id), label: l.name })),
     ],
     [langs],
   );
 
   const visibilityOptions = [
-    { value: "", label: "Видимость: любая" },
-    { value: "public", label: "public", hint: "Доступно всем" },
-    { value: "unlisted", label: "unlisted", hint: "По прямой ссылке" },
-    { value: "private", label: "private", hint: "Только вы" },
+    { value: "", label: "Видимость:" },
+    { value: "public", label: "public" },
+    { value: "unlisted", label: "unlisted" },
+    { value: "private", label: "private" },
   ];
 
   const orderingOptions = [
-    { value: "-created_at", label: "Newest", hint: "Сначала свежие" },
-    { value: "created_at", label: "Oldest", hint: "Сначала старые" },
-    { value: "-views", label: "Most viewed", hint: "Популярные" },
-    { value: "views", label: "Least viewed", hint: "Скрытые жемчужины" },
+    { value: "-created_at", label: "Newest"},
+    { value: "created_at", label: "Oldest"},
+    { value: "-views", label: "Most viewed"},
+    { value: "views", label: "Least viewed" },
     { value: "-updated_at", label: "Recently updated" },
     { value: "updated_at", label: "Least recently updated" },
   ];
