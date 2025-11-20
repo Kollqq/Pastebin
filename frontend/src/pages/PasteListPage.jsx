@@ -98,14 +98,14 @@ export default function PasteListPage() {
 
   const languageOptions = useMemo(
     () => [
-      { value: "", label: "Language:" },
+      { value: "", label: "Language" },
       ...(langs || []).map((l) => ({ value: String(l.id), label: l.name })),
     ],
     [langs],
   );
 
   const visibilityOptions = [
-    { value: "", label: "Visibility:" },
+    { value: "", label: "Visibility" },
     { value: "public", label: "public" },
     { value: "unlisted", label: "unlisted" },
     { value: "private", label: "private" },

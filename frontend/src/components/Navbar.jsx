@@ -17,7 +17,7 @@ export default function Navbar() {
   return (
     <header className="navbar glass-card">
       <Link to="/" className="navbar-brand" aria-label="Go to home page">
-        <span className="brand-mark">⌘</span>
+        <span className="brand-mark">P</span>
         <span className="brand-text">Pastebin</span>
       </Link>
 
