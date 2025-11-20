@@ -139,20 +139,6 @@ export default function PasteListPage() {
         </div>
       </div>
 
-      <div className="cta-card glass-card">
-        <div>
-          <p className="badge subtle">Start quickly</p>
-          <h3>Drop a new paste in seconds</h3>
-          <p className="page-subtitle">
-            Keep your snippets organized with language tags and privacy controls that fit your workflow.
-          </p>
-        </div>
-        <div className="cta-actions">
-          <Link to={isAuth ? "/new" : "/login"} className="btn primary">New paste</Link>
-          {!isAuth && <Link to="/register" className="btn ghost">Create account</Link>}
-        </div>
-      </div>
-
       <form onSubmit={applyFilters} className="filter-card glass-card">
         <div className="filter-grid">
           <input

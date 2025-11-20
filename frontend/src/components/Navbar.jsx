@@ -30,9 +30,6 @@ export default function Navbar() {
       </nav>
 
       <div className="navbar-actions">
-        {isAuth && (
-          <Link to="/new" className="btn primary nav-cta">New paste</Link>
-        )}
         <label className="theme-switcher">
           <span>Theme</span>
           <Select
