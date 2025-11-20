@@ -117,7 +117,6 @@ export default function PasteListPage() {
     { value: "-views", label: "Most viewed"},
     { value: "views", label: "Least viewed" },
     { value: "-updated_at", label: "Recently updated" },
-    { value: "updated_at", label: "Least recently updated" },
   ];
 
   const pageSizeOptions = [

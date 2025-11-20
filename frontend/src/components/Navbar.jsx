@@ -39,9 +39,8 @@ export default function Navbar() {
             onChange={(val) => setTheme(val)}
             aria-label="Select color theme"
             options={[
-              { value: "system", label: "System" },
-              { value: "light", label: "Light" },
               { value: "dark", label: "Dark" },
+              { value: "light", label: "Light" },
             ]}
           />
         </label>
