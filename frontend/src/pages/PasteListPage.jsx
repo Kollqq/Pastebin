@@ -12,6 +12,7 @@ function toInt(v, def) {
 
 export default function PasteListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const isAuth = !!localStorage.getItem("access");
 
   const initial = useMemo(() => ({
     search: searchParams.get("search") || "",
@@ -132,6 +133,23 @@ export default function PasteListPage() {
         <div>
           <h1>Pastes</h1>
           <p className="page-subtitle">Search and share code snippets in one sleek space.</p>
+        </div>
+        <div className="page-header-actions">
+          <Link to={isAuth ? "/new" : "/login"} className="btn primary">Create new paste</Link>
+        </div>
+      </div>
+
+      <div className="cta-card glass-card">
+        <div>
+          <p className="badge subtle">Start quickly</p>
+          <h3>Drop a new paste in seconds</h3>
+          <p className="page-subtitle">
+            Keep your snippets organized with language tags and privacy controls that fit your workflow.
+          </p>
+        </div>
+        <div className="cta-actions">
+          <Link to={isAuth ? "/new" : "/login"} className="btn primary">New paste</Link>
+          {!isAuth && <Link to="/register" className="btn ghost">Create account</Link>}
         </div>
       </div>
 

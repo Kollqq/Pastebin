@@ -44,6 +44,11 @@ export const getTrending = async () => {
   return data;
 };
 
+export const listMyPastes = async (params = {}) => {
+  const { data } = await api.get("/pastes/mine/", { params });
+  return data;
+};
+
 export const getMonthlyStats = async (params = {}) => {
   const { data } = await api.get("/stats/monthly/", { params });
   return data;

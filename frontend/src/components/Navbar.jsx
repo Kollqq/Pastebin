@@ -25,11 +25,14 @@ export default function Navbar() {
         <Link to="/" className="nav-link">Pastes</Link>
         <Link to="/trending" className="nav-link">Trending</Link>
         <Link to="/stats" className="nav-link">Stats</Link>
-        {isAuth && <Link to="/new" className="nav-link">New</Link>}
+        {isAuth && <Link to="/my-pastes" className="nav-link">My pastes</Link>}
         {isAuth && <Link to="/stars" className="nav-link">Stars</Link>}
       </nav>
 
       <div className="navbar-actions">
+        {isAuth && (
+          <Link to="/new" className="btn primary nav-cta">New paste</Link>
+        )}
         <label className="theme-switcher">
           <span>Theme</span>
           <Select

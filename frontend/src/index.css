@@ -226,6 +226,11 @@ body {
   gap: 16px;
 }
 
+.nav-cta {
+  padding-inline: 14px 16px;
+  white-space: nowrap;
+}
+
 .theme-switcher {
   display: flex;
   align-items: center;
@@ -529,10 +534,33 @@ textarea:focus-visible {
   gap: 16px;
 }
 
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .page-subtitle {
   font-size: 0.95rem;
   color: var(--muted);
   max-width: 520px;
+}
+
+.cta-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: clamp(18px, 4vw, 26px);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(59, 130, 246, 0.08));
+}
+
+.cta-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .filter-card {
@@ -593,6 +621,12 @@ textarea:focus-visible {
   gap: 12px;
 }
 
+.paste-card-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -607,12 +641,24 @@ textarea:focus-visible {
   letter-spacing: 0.04em;
 }
 
+.badge.subtle {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  text-transform: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .paste-card-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.paste-card-actions {
+  display: flex;
+  gap: 10px;
 }
 
 .list-card {

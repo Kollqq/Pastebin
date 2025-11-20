@@ -7,6 +7,7 @@ import PasteListPage from "./pages/PasteListPage.jsx";
 import PasteDetailPage from "./pages/PasteDetailPage.jsx";
 import PasteFormPage from "./pages/PasteFormPage.jsx";
 import StarsPage from "./pages/StarsPage.jsx";
+import MyPastesPage from "./pages/MyPastesPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import TrendingPage from "./pages/TrendingPage";
 import StatsPage from "./pages/StatsPage";
@@ -38,6 +39,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <PasteFormPage edit />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/my-pastes"
+              element={
+                <ProtectedRoute>
+                  <MyPastesPage />
                 </ProtectedRoute>
               }
             />

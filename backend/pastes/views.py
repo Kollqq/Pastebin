@@ -62,7 +62,7 @@ class PasteViewSet(viewsets.ModelViewSet):
 
     throttle_classes = [ScopedRateThrottle]
     def get_throttle_scopes(self):
-        if self.action in ("list", "retrieve", "trending"):
+        if self.action in ("list", "retrieve", "trending", "mine"):
             return ["pastes_read"]
         return ["pastes_write"]
 
@@ -99,6 +99,23 @@ class PasteViewSet(viewsets.ModelViewSet):
             .filter(visibility=Paste.Visibility.PUBLIC, updated_at__gte=since)
             .order_by("-views")[:10]
         )
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+    @decorators.action(
+        detail=False,
+        methods=["GET"],
+        permission_classes=[IsAuthenticated],
+        url_path="mine",
+    )
+    def mine(self, request):
+        qs = Paste.objects.select_related("owner", "language").filter(owner=request.user)
+        qs = qs.order_by("-created_at")
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
