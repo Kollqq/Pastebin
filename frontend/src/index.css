@@ -77,9 +77,13 @@ html, body, #root {
 body {
   margin: 0;
   min-width: 320px;
-  background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.25), transparent 45%),
-              radial-gradient(circle at bottom right, rgba(167, 139, 250, 0.25), transparent 40%),
-              linear-gradient(160deg, var(--bg), var(--bg-accent));
+  background-color: var(--bg);
+  background-image: radial-gradient(circle at 12% 18%, rgba(96, 165, 250, 0.2), transparent 38%),
+    radial-gradient(circle at 85% 82%, rgba(167, 139, 250, 0.2), transparent 36%),
+    linear-gradient(165deg, var(--bg), var(--bg-accent));
+  background-repeat: no-repeat;
+  background-size: 140% 140%, 120% 120%, 100% 100%;
+  background-attachment: fixed;
   color: var(--fg);
 }
 
@@ -285,7 +289,7 @@ textarea {
 }
 
 textarea {
-  resize: vertical;
+  resize: none;
   min-height: 220px;
 }
 
