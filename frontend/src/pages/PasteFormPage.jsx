@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { createPaste, updatePaste, getPaste, listLanguages } from "../api/pastes";
 import { useToast } from "../components/ToastProvider";
+import Select from "../components/Select.jsx";
 
 export default function PasteFormPage({ edit }) {
   const { id } = useParams();
@@ -38,6 +39,10 @@ export default function PasteFormPage({ edit }) {
     setForm({ ...form, [name]: value });
   }
 
+  function setField(name, value) {
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
   async function submit(e) {
     e.preventDefault();
     const payload = { ...form, language_id: form.language_id === "null" ? null : form.language_id };
@@ -57,20 +62,32 @@ export default function PasteFormPage({ edit }) {
       <div className="form-row">
         <label>
           <span>Language</span>
-          <select name="language_id" value={form.language_id ?? "null"} onChange={onChange}>
-            <option value="null">— none —</option>
-            {(langs || []).map((l) => (
-              <option key={l.id} value={l.id}>{l.name}</option>
-            ))}
-          </select>
+          <Select
+            name="language_id"
+            value={form.language_id ?? "null"}
+            onChange={(val) => setField("language_id", val)}
+            placeholder="Выберите язык"
+            options={[
+              { value: "null", label: "— none —", hint: "Без подсветки синтаксиса" },
+              ...(langs || []).map((l) => ({
+                value: String(l.id),
+                label: l.name,
+              })),
+            ]}
+          />
         </label>
         <label>
           <span>Visibility</span>
-          <select name="visibility" value={form.visibility} onChange={onChange}>
-            <option value="public">public</option>
-            <option value="unlisted">unlisted</option>
-            <option value="private">private</option>
-          </select>
+          <Select
+            name="visibility"
+            value={form.visibility}
+            onChange={(val) => setField("visibility", val)}
+            options={[
+              { value: "public", label: "public", hint: "Доступно всем" },
+              { value: "unlisted", label: "unlisted", hint: "По прямой ссылке" },
+              { value: "private", label: "private", hint: "Только вы" },
+            ]}
+          />
         </label>
       </div>
       <button className="btn primary">{edit ? "Save" : "Create"}</button>

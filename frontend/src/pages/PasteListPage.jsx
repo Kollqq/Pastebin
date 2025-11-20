@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { listPastes, listLanguages } from "../api/pastes";
 import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
+import Select from "../components/Select.jsx";
 
 function toInt(v, def) {
   const n = Number(v);
@@ -95,6 +96,37 @@ export default function PasteListPage() {
 
   const totalPages = Math.max(1, Math.ceil(count / pageSize));
 
+  const languageOptions = useMemo(
+    () => [
+      { value: "", label: "Язык: любой" },
+      ...(langs || []).map((l) => ({ value: String(l.id), label: l.name })),
+    ],
+    [langs],
+  );
+
+  const visibilityOptions = [
+    { value: "", label: "Видимость: любая" },
+    { value: "public", label: "public", hint: "Доступно всем" },
+    { value: "unlisted", label: "unlisted", hint: "По прямой ссылке" },
+    { value: "private", label: "private", hint: "Только вы" },
+  ];
+
+  const orderingOptions = [
+    { value: "-created_at", label: "Newest", hint: "Сначала свежие" },
+    { value: "created_at", label: "Oldest", hint: "Сначала старые" },
+    { value: "-views", label: "Most viewed", hint: "Популярные" },
+    { value: "views", label: "Least viewed", hint: "Скрытые жемчужины" },
+    { value: "-updated_at", label: "Recently updated" },
+    { value: "updated_at", label: "Least recently updated" },
+  ];
+
+  const pageSizeOptions = [
+    { value: "5", label: "5 / page" },
+    { value: "10", label: "10 / page" },
+    { value: "20", label: "20 / page" },
+    { value: "50", label: "50 / page" },
+  ];
+
   return (
     <section className="page">
       <div className="page-header">
@@ -111,30 +143,26 @@ export default function PasteListPage() {
             value={form.search}
             onChange={(e) => setForm({ ...form, search: e.target.value })}
           />
-          <select value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })}>
-            <option value="">Язык: любой</option>
-            {(langs || []).map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
-          </select>
-          <select value={form.visibility} onChange={(e) => setForm({ ...form, visibility: e.target.value })}>
-            <option value="">Видимость: любая</option>
-            <option value="public">public</option>
-            <option value="unlisted">unlisted</option>
-            <option value="private">private</option>
-          </select>
-          <select value={form.ordering} onChange={(e) => setForm({ ...form, ordering: e.target.value })}>
-            <option value="-created_at">Newest</option>
-            <option value="created_at">Oldest</option>
-            <option value="-views">Most viewed</option>
-            <option value="views">Least viewed</option>
-            <option value="-updated_at">Recently updated</option>
-            <option value="updated_at">Least recently updated</option>
-          </select>
-          <select value={pageSize} onChange={(e) => setPageSize(toInt(e.target.value, 10))}>
-            <option value={5}>5 / page</option>
-            <option value={10}>10 / page</option>
-            <option value={20}>20 / page</option>
-            <option value={50}>50 / page</option>
-          </select>
+          <Select
+            value={form.language}
+            onChange={(val) => setForm({ ...form, language: val })}
+            options={languageOptions}
+          />
+          <Select
+            value={form.visibility}
+            onChange={(val) => setForm({ ...form, visibility: val })}
+            options={visibilityOptions}
+          />
+          <Select
+            value={form.ordering}
+            onChange={(val) => setForm({ ...form, ordering: val })}
+            options={orderingOptions}
+          />
+          <Select
+            value={String(pageSize)}
+            onChange={(val) => setPageSize(toInt(val, 10))}
+            options={pageSizeOptions}
+          />
           <button className="btn primary">Применить</button>
         </div>
       </form>

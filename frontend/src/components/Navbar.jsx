@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "./ThemeProvider";
+import Select from "./Select.jsx";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -31,15 +32,18 @@ export default function Navbar() {
       <div className="navbar-actions">
         <label className="theme-switcher">
           <span>Theme</span>
-          <select
+          <Select
+            size="sm"
+            name="theme"
             value={theme}
-            onChange={(e) => setTheme(e.target.value)}
+            onChange={(val) => setTheme(val)}
             aria-label="Select color theme"
-          >
-            <option value="system">system</option>
-            <option value="light">light</option>
-            <option value="dark">dark</option>
-          </select>
+            options={[
+              { value: "system", label: "System" },
+              { value: "light", label: "Light" },
+              { value: "dark", label: "Dark" },
+            ]}
+          />
         </label>
 
         {!isAuth ? (
