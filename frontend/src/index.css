@@ -724,6 +724,11 @@ pre.codebox {
   max-height: 70vh;
 }
 
+pre.codebox .hljs {
+  background: transparent !important;
+  color: var(--fg);
+}
+
 .pagination {
   display: flex;
   gap: 10px;
