@@ -54,8 +54,8 @@ export default function PasteFormPage({ edit }) {
   return (
     <form onSubmit={submit} className="form-card glass-card form-editor">
       <div className="form-header">
-        <h2>{edit ? "Редактирование пасты" : "Новая паста"}</h2>
-        <p>Добавьте описание, код и выберите видимость, чтобы поделиться с миром.</p>
+        <h2>{edit ? "Edit paste" : "New paste"}</h2>
+        <p>Add a description, code, and visibility to share with the world.</p>
       </div>
       <input name="title" placeholder="title" value={form.title} onChange={onChange} />
       <textarea name="content" rows={12} placeholder="content" value={form.content} onChange={onChange} />
@@ -66,9 +66,9 @@ export default function PasteFormPage({ edit }) {
             name="language_id"
             value={form.language_id ?? "null"}
             onChange={(val) => setField("language_id", val)}
-            placeholder="Выберите язык"
+            placeholder="Choose a language"
             options={[
-              { value: "null", label: "— none —", hint: "Без подсветки синтаксиса" },
+              { value: "null", label: "— none —", hint: "No syntax highlighting" },
               ...(langs || []).map((l) => ({
                 value: String(l.id),
                 label: l.name,
@@ -83,9 +83,9 @@ export default function PasteFormPage({ edit }) {
             value={form.visibility}
             onChange={(val) => setField("visibility", val)}
             options={[
-              { value: "public", label: "public", hint: "Доступно всем" },
-              { value: "unlisted", label: "unlisted", hint: "По прямой ссылке" },
-              { value: "private", label: "private", hint: "Только вы" },
+              { value: "public", label: "public", hint: "Visible to everyone" },
+              { value: "unlisted", label: "unlisted", hint: "Direct link access" },
+              { value: "private", label: "private", hint: "Only you" },
             ]}
           />
         </label>

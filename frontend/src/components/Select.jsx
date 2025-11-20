@@ -5,7 +5,7 @@ export default function Select({
   value,
   onChange,
   options = [],
-  placeholder = "Выберите вариант",
+  placeholder = "Choose an option",
   disabled = false,
   className = "",
   size = "md",
@@ -101,7 +101,7 @@ export default function Select({
             </button>
           );
         })}
-        {options.length === 0 && <div className="ui-select-empty">Нет вариантов</div>}
+        {options.length === 0 && <div className="ui-select-empty">No options</div>}
       </div>
     </div>
   );

@@ -13,8 +13,8 @@ export default function StarsPage() {
     <section className="page">
       <div className="page-header">
         <div>
-          <h1>Избранные пасты</h1>
-          <p className="page-subtitle">Быстрый доступ к сохранённым сниппетам.</p>
+          <h1>Starred pastes</h1>
+          <p className="page-subtitle">Quick access to your saved snippets.</p>
         </div>
       </div>
       <ul className="list-card glass-card">
@@ -23,7 +23,7 @@ export default function StarsPage() {
             <Link to={`/pastes/${s.paste}`} className="list-card-link">Paste #{s.paste}</Link>
           </li>
         ))}
-        {items.length === 0 && <li className="list-empty">Нет сохранённых паст</li>}
+        {items.length === 0 && <li className="list-empty">No saved pastes</li>}
       </ul>
     </section>
   );

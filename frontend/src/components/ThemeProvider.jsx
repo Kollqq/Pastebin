@@ -11,7 +11,7 @@ export default function ThemeProvider({ children }) {
     return saved === "light" || saved === "dark" ? saved : "dark";
   });
 
-  // применяем тему к <html data-theme="...">
+  // apply theme to <html data-theme="...">
   useEffect(() => {
     const root = document.documentElement;
     root.setAttribute("data-theme", theme);

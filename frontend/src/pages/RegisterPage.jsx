@@ -21,15 +21,15 @@ export default function RegisterPage() {
       localStorage.setItem("refresh", refresh);
       navigate("/");
     } catch (e) {
-      setErr("Ошибка регистрации");
+      setErr("Registration failed");
     }
   }
 
   return (
     <form onSubmit={submit} className="form-card glass-card">
       <div className="form-header">
-        <h2>Создайте аккаунт</h2>
-        <p>Получите быстрый доступ к избранным пастам и расширенным возможностям.</p>
+        <h2>Create an account</h2>
+        <p>Get quick access to favorite pastes and advanced features.</p>
       </div>
       <input name="username" placeholder="username" value={form.username} onChange={onChange} />
       <input name="email" placeholder="email" value={form.email} onChange={onChange} />

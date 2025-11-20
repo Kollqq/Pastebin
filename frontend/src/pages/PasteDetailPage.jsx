@@ -98,7 +98,7 @@ export default function PasteDetailPage() {
           </div>
         </div>
         <div className="detail-actions">
-          <button onClick={star} className="btn ghost" aria-label="Add to stars">☆ В избранное</button>
+          <button onClick={star} className="btn ghost" aria-label="Add to stars">☆ Add to stars</button>
           <Link to={`/edit/${paste.id}`} className="btn ghost">Edit</Link>
           <button onClick={remove} className="btn danger" aria-label="Delete paste">Delete</button>
         </div>

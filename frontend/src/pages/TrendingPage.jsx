@@ -23,8 +23,8 @@ export default function TrendingPage() {
     <section className="page">
       <div className="page-header">
         <div>
-          <h1>В тренде</h1>
-          <p className="page-subtitle">Самые просматриваемые пасты за последние 24 часа.</p>
+          <h1>Trending</h1>
+          <p className="page-subtitle">Most viewed pastes from the last 24 hours.</p>
         </div>
       </div>
       <ul className="list-card glass-card">
@@ -39,7 +39,7 @@ export default function TrendingPage() {
             </Link>
           </li>
         ))}
-        {items.length === 0 && <li className="list-empty">Нет популярных паст</li>}
+        {items.length === 0 && <li className="list-empty">No popular pastes</li>}
       </ul>
     </section>
   );

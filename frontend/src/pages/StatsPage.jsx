@@ -37,8 +37,8 @@ export default function StatsPage(){
     <section className="page">
       <div className="page-header">
         <div>
-          <h1>Статистика</h1>
-          <p className="page-subtitle">Анализируйте активность за выбранный период.</p>
+          <h1>Statistics</h1>
+          <p className="page-subtitle">Analyze activity for your selected period.</p>
         </div>
       </div>
 

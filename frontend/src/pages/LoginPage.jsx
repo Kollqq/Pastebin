@@ -17,15 +17,15 @@ export default function LoginPage() {
       localStorage.setItem("refresh", refresh);
       navigate("/");
     } catch (e) {
-      setErr("Неверные данные для входа");
+      setErr("Invalid login details");
     }
   }
 
   return (
     <form onSubmit={submit} className="form-card glass-card">
       <div className="form-header">
-        <h2>С возвращением</h2>
-        <p>Войдите, чтобы управлять своими пастами и отслеживать статистику.</p>
+        <h2>Welcome back</h2>
+        <p>Sign in to manage your pastes and track stats.</p>
       </div>
       <input placeholder="username" value={username} onChange={(e)=>setUsername(e.target.value)} />
       <input placeholder="password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />

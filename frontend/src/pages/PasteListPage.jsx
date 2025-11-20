@@ -98,14 +98,14 @@ export default function PasteListPage() {
 
   const languageOptions = useMemo(
     () => [
-      { value: "", label: "Язык:" },
+      { value: "", label: "Language:" },
       ...(langs || []).map((l) => ({ value: String(l.id), label: l.name })),
     ],
     [langs],
   );
 
   const visibilityOptions = [
-    { value: "", label: "Видимость:" },
+    { value: "", label: "Visibility:" },
     { value: "public", label: "public" },
     { value: "unlisted", label: "unlisted" },
     { value: "private", label: "private" },
@@ -131,14 +131,14 @@ export default function PasteListPage() {
       <div className="page-header">
         <div>
           <h1>Pastes</h1>
-          <p className="page-subtitle">Ищите и делитесь сниппетами кода в едином стильном пространстве.</p>
+          <p className="page-subtitle">Search and share code snippets in one sleek space.</p>
         </div>
       </div>
 
       <form onSubmit={applyFilters} className="filter-card glass-card">
         <div className="filter-grid">
           <input
-            placeholder="Поиск по названию, содержимому или автору"
+            placeholder="Search by title"
             value={form.search}
             onChange={(e) => setForm({ ...form, search: e.target.value })}
           />
@@ -162,7 +162,7 @@ export default function PasteListPage() {
             onChange={(val) => setPageSize(toInt(val, 10))}
             options={pageSizeOptions}
           />
-          <button className="btn primary">Применить</button>
+          <button className="btn primary">Apply</button>
         </div>
       </form>
 
@@ -171,7 +171,7 @@ export default function PasteListPage() {
           <Spinner size={32} />
         </div>
       ) : items.length === 0 ? (
-        <div className="empty-card glass-card">Ничего не найдено. Измените фильтры или создайте новую пасту.</div>
+        <div className="empty-card glass-card">Nothing found. Adjust filters or create a new paste.</div>
       ) : (
         <>
           <ul className="paste-grid">

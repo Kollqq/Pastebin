@@ -39,7 +39,7 @@ class LanguageViewSet(
     permission_classes = [AllowAny]
 
     throttle_classes = [ScopedRateThrottle]
-    throttle_scope = "pastes_read"  # лёгкие публичные чтения
+    throttle_scope = "pastes_read"  # lightweight public reads
 
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["name", "slug"]
@@ -122,7 +122,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 class StarViewSet(viewsets.ModelViewSet):
     serializer_class = StarSerializer
     permission_classes = [IsAuthenticated]
-    http_method_names = ["get", "post", "delete"]  # PUT/PATCH не нужны
+    http_method_names = ["get", "post", "delete"]  # PUT/PATCH are unnecessary
 
     throttle_classes = [ScopedRateThrottle]
     def get_throttle_scopes(self):
