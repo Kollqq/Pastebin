@@ -278,6 +278,11 @@ textarea:focus-visible {
 .ui-select {
   position: relative;
   width: 100%;
+  z-index: 1;
+}
+
+.ui-select.open {
+  z-index: 50;
 }
 
 .ui-select-trigger {
