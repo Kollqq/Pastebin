@@ -369,8 +369,14 @@ textarea:focus-visible {
 .filter-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: minmax(260px, 2fr) repeat(5, minmax(170px, 1fr));
   align-items: end;
+}
+
+@media (max-width: 900px) {
+  .filter-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
 }
 
 .filter-grid button {
