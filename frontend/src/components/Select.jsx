@@ -93,8 +93,10 @@ export default function Select({
               className={`ui-select-option ${isSelected ? "selected" : ""}`.trim()}
               onClick={() => choose(opt)}
             >
-              <div className="option-title">{opt.label}</div>
-              {opt.hint && <div className="option-hint">{opt.hint}</div>}
+              <div className="option-text">
+                <div className="option-title">{opt.label}</div>
+                {opt.hint && <div className="option-hint">{opt.hint}</div>}
+              </div>
               {isSelected && <span className="option-check" aria-hidden>•</span>}
             </button>
           );

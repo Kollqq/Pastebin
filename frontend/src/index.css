@@ -374,6 +374,15 @@ textarea:focus-visible {
   transition: background 0.18s ease, border-color 0.18s ease;
 }
 
+.ui-select-option .option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
 .ui-select-option .option-title {
   font-weight: 600;
 }
