@@ -11,7 +11,7 @@ class LanguageAdmin(admin.ModelAdmin):
 class PasteAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'owner', 'visibility', 'language', 'views', 'created_at')
     list_filter = ('visibility', 'language')
-    search_fields = ('title', 'content', 'owner__username')
+    search_fields = ('title',)
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
