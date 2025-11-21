@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { listPastes, listLanguages } from "../api/pastes";
 import Pagination from "../components/Pagination";
@@ -20,8 +20,14 @@ export default function PasteListPage() {
     visibility: searchParams.get("visibility") || "",
     ordering: searchParams.get("ordering") || "-created_at",
     page: toInt(searchParams.get("page"), 1),
-    page_size: toInt(searchParams.get("page_size"), 10),
   }), []);
+
+  const getResponsivePageSize = () => {
+    if (typeof window === "undefined") return 12;
+    if (window.innerWidth < 640) return 6;
+    if (window.innerWidth < 960) return 8;
+    return 12;
+  };
 
   const [form, setForm] = useState({
     search: initial.search,
@@ -30,7 +36,8 @@ export default function PasteListPage() {
     ordering: initial.ordering,
   });
   const [page, setPage] = useState(initial.page);
-  const [pageSize, setPageSize] = useState(initial.page_size);
+  const [pageSize, setPageSize] = useState(getResponsivePageSize());
+  const hasLoadedOnce = useRef(false);
 
   const [langs, setLangs] = useState([]);
   const [items, setItems] = useState([]);
@@ -65,25 +72,56 @@ export default function PasteListPage() {
       visibility: initial.visibility || undefined,
       ordering: initial.ordering || undefined,
       page: initial.page,
-      page_size: initial.page_size,
+      page_size: pageSize,
     });
   }, []);
 
+  useEffect(() => {
+    const handler = () => {
+      setPageSize((prev) => {
+        const next = getResponsivePageSize();
+        return next === prev ? prev : next;
+      });
+    };
+
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedOnce.current) {
+      hasLoadedOnce.current = true;
+      return;
+    }
+
+    setPage(1);
+    const sp = new URLSearchParams(searchParams);
+    sp.set("page", "1");
+    setSearchParams(sp);
+    load({
+      search: form.search || undefined,
+      language: form.language || undefined,
+      visibility: form.visibility || undefined,
+      ordering: form.ordering || undefined,
+      page: 1,
+      page_size: pageSize,
+    });
+  }, [pageSize]);
+
   function applyFilters(e) {
     e?.preventDefault?.();
-    const next = { ...form, page: 1, page_size: pageSize };
+    const next = { ...form, page: 1 };
     const sp = new URLSearchParams();
     Object.entries(next).forEach(([k, v]) => { if (v !== "" && v != null) sp.set(k, v); });
     setSearchParams(sp);
     setPage(1);
-    load(next);
+    load({ ...next, page_size: pageSize });
   }
 
   function changePage(p) {
     setPage(p);
     const sp = new URLSearchParams(searchParams);
     sp.set("page", String(p));
-    sp.set("page_size", String(pageSize));
     setSearchParams(sp);
     load({
       search: form.search || undefined,
@@ -120,13 +158,6 @@ export default function PasteListPage() {
     { value: "-updated_at", label: "Recently updated" },
   ];
 
-  const pageSizeOptions = [
-    { value: "5", label: "5 / page" },
-    { value: "10", label: "10 / page" },
-    { value: "20", label: "20 / page" },
-    { value: "50", label: "50 / page" },
-  ];
-
   return (
     <section className="page">
       <div className="page-header">
@@ -160,11 +191,6 @@ export default function PasteListPage() {
             value={form.ordering}
             onChange={(val) => setForm({ ...form, ordering: val })}
             options={orderingOptions}
-          />
-          <Select
-            value={String(pageSize)}
-            onChange={(val) => setPageSize(toInt(val, 10))}
-            options={pageSizeOptions}
           />
           <button className="btn primary">Apply</button>
         </div>
