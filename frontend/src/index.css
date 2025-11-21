@@ -690,6 +690,29 @@ textarea:focus-visible {
   color: inherit;
 }
 
+.list-card-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.list-card-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-card-meta {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.list-card-separator {
+  color: var(--muted);
+}
+
 .list-title {
   font-weight: 600;
 }

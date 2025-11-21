@@ -21,8 +21,11 @@ export default function StarsPage() {
         {items.map(s => (
           <li key={s.id}>
             <Link to={`/pastes/${s.paste}`} className="list-card-link">
-              <div className="list-card-title">{s.paste_title || `Paste #${s.paste}`}</div>
-              <div className="list-card-subtitle">by {s.paste_owner_username || "unknown"}</div>
+              <div className="list-card-line">
+                <span className="list-card-title">{s.paste_title || `Paste #${s.paste}`}</span>
+                <span className="list-card-separator">•</span>
+                <span className="list-card-meta">{s.paste_owner_username || "unknown"}</span>
+              </div>
             </Link>
           </li>
         ))}
