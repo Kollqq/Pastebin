@@ -20,7 +20,10 @@ export default function StarsPage() {
       <ul className="list-card glass-card">
         {items.map(s => (
           <li key={s.id}>
-            <Link to={`/pastes/${s.paste}`} className="list-card-link">Paste #{s.paste}</Link>
+            <Link to={`/pastes/${s.paste}`} className="list-card-link">
+              <div className="list-card-title">{s.paste_title || `Paste #${s.paste}`}</div>
+              <div className="list-card-subtitle">by {s.paste_owner_username || "unknown"}</div>
+            </Link>
           </li>
         ))}
         {items.length === 0 && <li className="list-empty">No saved pastes</li>}

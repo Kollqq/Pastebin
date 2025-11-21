@@ -76,7 +76,10 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "author", "author_username", "created_at")
 
 class StarSerializer(serializers.ModelSerializer):
+    paste_title = serializers.ReadOnlyField(source="paste.title")
+    paste_owner_username = serializers.ReadOnlyField(source="paste.owner.username")
+
     class Meta:
         model = Star
-        fields = ("id", "user", "paste", "created_at")
-        read_only_fields = ("id", "user", "created_at")
+        fields = ("id", "user", "paste", "created_at", "paste_title", "paste_owner_username")
+        read_only_fields = ("id", "user", "created_at", "paste_title", "paste_owner_username")

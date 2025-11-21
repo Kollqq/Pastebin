@@ -166,7 +166,7 @@ class StarViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return (
             Star.objects
-            .select_related("paste", "user")
+            .select_related("paste", "paste__owner", "user")
             .filter(user=self.request.user)
         )
 
