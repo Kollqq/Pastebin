@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getPaste, deletePaste, addStar } from "../api/pastes";
+import { getPaste, deletePaste, addStar, removeStar } from "../api/pastes";
 import { useToast } from "../components/ToastProvider";
 import hljs from "highlight.js";
 
@@ -50,8 +50,20 @@ export default function PasteDetailPage() {
   if (!paste) return <div>Not found</div>;
 
   async function star() {
+    if (paste?.is_starred && paste?.star_id) {
+      try {
+        await removeStar(paste.star_id);
+        setPaste((prev) => prev ? { ...prev, is_starred: false, star_id: null } : prev);
+        toast.add("Removed from stars", "success");
+      } catch {
+        toast.add("Error removing from stars", "error");
+      }
+      return;
+    }
+
     try {
-      await addStar(paste.id);
+      const starData = await addStar(paste.id);
+      setPaste((prev) => prev ? { ...prev, is_starred: true, star_id: starData?.id } : prev);
       toast.add("Added to stars", "success");
     } catch {
       toast.add("Already in stars or error", "error");
@@ -98,9 +110,15 @@ export default function PasteDetailPage() {
           </div>
         </div>
         <div className="detail-actions">
-          <button onClick={star} className="btn ghost" aria-label="Add to stars">☆ Add to stars</button>
-          <Link to={`/edit/${paste.id}`} className="btn ghost">Edit</Link>
-          <button onClick={remove} className="btn danger" aria-label="Delete paste">Delete</button>
+          <button onClick={star} className="btn ghost" aria-label={paste.is_starred ? "Remove from stars" : "Add to stars"}>
+            {paste.is_starred ? "★ Remove from stars" : "☆ Add to stars"}
+          </button>
+          {paste.is_owner && (
+            <>
+              <Link to={`/edit/${paste.id}`} className="btn ghost">Edit</Link>
+              <button onClick={remove} className="btn danger" aria-label="Delete paste">Delete</button>
+            </>
+          )}
         </div>
       </header>
 

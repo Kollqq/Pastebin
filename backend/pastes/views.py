@@ -1,6 +1,6 @@
 from django.utils import timezone
 from datetime import datetime
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Prefetch
 from django.db.models.functions import TruncMonth
 from django_filters import rest_framework as filters
 
@@ -71,9 +71,21 @@ class PasteViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "updated_at", "views", "title"]
     ordering = ["-created_at"]
 
+    def _user_star_prefetch(self):
+        user = self.request.user
+        star_qs = Star.objects.none()
+        if user.is_authenticated:
+            star_qs = Star.objects.filter(user=user)
+        return Prefetch("stars", queryset=star_qs, to_attr="user_stars")
+
     def get_queryset(self):
         user = self.request.user
-        qs = Paste.objects.select_related("owner", "language").all()
+        qs = (
+            Paste.objects
+            .select_related("owner", "language")
+            .prefetch_related(self._user_star_prefetch())
+            .all()
+        )
         if self.action == "list":
             if user.is_authenticated:
                 return qs.filter(Q(visibility=Paste.Visibility.PUBLIC) | Q(owner=user))
@@ -97,6 +109,7 @@ class PasteViewSet(viewsets.ModelViewSet):
         qs = (
             Paste.objects.select_related("owner", "language")
             .filter(visibility=Paste.Visibility.PUBLIC, updated_at__gte=since)
+            .prefetch_related(self._user_star_prefetch())
             .order_by("-views")[:10]
         )
         serializer = self.get_serializer(qs, many=True)
@@ -109,7 +122,12 @@ class PasteViewSet(viewsets.ModelViewSet):
         url_path="mine",
     )
     def mine(self, request):
-        qs = Paste.objects.select_related("owner", "language").filter(owner=request.user)
+        qs = (
+            Paste.objects
+            .select_related("owner", "language")
+            .prefetch_related(self._user_star_prefetch())
+            .filter(owner=request.user)
+        )
         qs = qs.order_by("-created_at")
         page = self.paginate_queryset(qs)
         if page is not None:

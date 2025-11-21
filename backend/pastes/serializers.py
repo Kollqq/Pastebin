@@ -15,6 +15,9 @@ class PasteSerializer(serializers.ModelSerializer):
         source='language', queryset=Language.objects.all(),
         write_only=True, required=False, allow_null=True
     )
+    is_owner = serializers.SerializerMethodField()
+    is_starred = serializers.SerializerMethodField()
+    star_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Paste
@@ -22,8 +25,12 @@ class PasteSerializer(serializers.ModelSerializer):
             "id", "title", "content", "language", "language_id",
             "visibility", "expire_at", "views",
             "owner", "owner_username", "created_at", "updated_at",
+            "is_owner", "is_starred", "star_id",
         )
-        read_only_fields = ("id", "views", "owner", "owner_username", "created_at", "updated_at", "language")
+        read_only_fields = (
+            "id", "views", "owner", "owner_username", "created_at", "updated_at", "language",
+            "is_owner", "is_starred", "star_id",
+        )
 
     def validate_title(self, value):
         if value and len(value) > 120:
@@ -35,6 +42,30 @@ class PasteSerializer(serializers.ModelSerializer):
         if value and len(value.encode("utf-8")) > maxb:
             raise serializers.ValidationError(f"Content too large (>{maxb} bytes).")
         return value
+
+    def get_is_owner(self, obj):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        return bool(user and user.is_authenticated and obj.owner_id == user.id)
+
+    def _get_user_star(self, obj):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if not (user and user.is_authenticated):
+            return None
+
+        stars = getattr(obj, "user_stars", None)
+        if stars is not None:
+            return stars[0] if stars else None
+
+        return obj.stars.filter(user=user).first()
+
+    def get_is_starred(self, obj):
+        return self._get_user_star(obj) is not None
+
+    def get_star_id(self, obj):
+        star = self._get_user_star(obj)
+        return star.id if star else None
 
 class CommentSerializer(serializers.ModelSerializer):
     author_username = serializers.ReadOnlyField(source='author.username')

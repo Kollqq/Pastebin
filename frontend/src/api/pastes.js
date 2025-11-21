@@ -39,6 +39,10 @@ export const addStar = async (pasteId) => {
   return data;
 };
 
+export const removeStar = async (starId) => {
+  await api.delete(`/stars/${starId}/`);
+};
+
 export const getTrending = async () => {
   const { data } = await api.get("/pastes/trending/");
   return data;
