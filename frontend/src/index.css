@@ -920,27 +920,21 @@ pre.codebox .hljs {
 
 .month-picker {
   position: relative;
-  min-width: 240px;
+  min-width: 200px;
   flex: 1;
 }
 
 .month-picker-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .month-picker-label {
   color: var(--muted);
   font-size: 0.9rem;
   font-weight: 600;
-}
-
-.month-picker-helper {
-  color: var(--muted);
-  font-size: 0.8rem;
-  opacity: 0.8;
 }
 
 .month-picker-trigger {

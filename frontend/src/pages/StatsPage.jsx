@@ -10,7 +10,7 @@ function ym(d){ return dayjs(d).format("YYYY-MM"); }
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function MonthPicker({ label, value, onChange, helper }){
+function MonthPicker({ label, value, onChange }){
   const [open, setOpen] = useState(false);
   const [panelYear, setPanelYear] = useState(dayjs(value).year());
   const wrapperRef = useRef(null);
@@ -38,10 +38,7 @@ function MonthPicker({ label, value, onChange, helper }){
   return (
     <div className="month-picker" ref={wrapperRef}>
       <div className="month-picker-header">
-        <div>
-          <div className="month-picker-label">{label}</div>
-          {helper && <div className="month-picker-helper">{helper}</div>}
-        </div>
+        <div className="month-picker-label">{label}</div>
         <button
           type="button"
           className="month-picker-trigger"
@@ -146,13 +143,11 @@ export default function StatsPage(){
       <form onSubmit={onSubmit} className="stats-filter glass-card">
         <MonthPicker
           label="Start"
-          helper="Pick the first month for your report"
           value={start}
           onChange={setStart}
         />
         <MonthPicker
           label="End"
-          helper="Pick the last month for your report"
           value={end}
           onChange={setEnd}
         />
