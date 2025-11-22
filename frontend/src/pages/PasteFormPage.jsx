@@ -43,12 +43,31 @@ export default function PasteFormPage({ edit }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
+  function parseError(err) {
+    const data = err?.response?.data;
+    if (!data) return err?.message || "Unknown error";
+    if (typeof data === "string") return data;
+    if (Array.isArray(data)) return data.join(", ");
+    if (data.detail) return data.detail;
+    const firstKey = Object.keys(data)[0];
+    if (!firstKey) return "Unknown error";
+    const val = data[firstKey];
+    if (Array.isArray(val)) return `${firstKey}: ${val.join(", ")}`;
+    if (typeof val === "string") return `${firstKey}: ${val}`;
+    return JSON.stringify(data);
+  }
+
   async function submit(e) {
     e.preventDefault();
     const payload = { ...form, language_id: form.language_id === "null" ? null : form.language_id };
-    const saved = edit ? await updatePaste(id, payload) : await createPaste(payload);
-    toast.add(edit ? "Saved" : "Created", "success");
-    navigate(`/pastes/${saved.id}`);
+    try {
+      const saved = edit ? await updatePaste(id, payload) : await createPaste(payload);
+      toast.add(edit ? "Saved" : "Created", "success");
+      navigate(`/pastes/${saved.id}`);
+    } catch (err) {
+      const message = parseError(err) || (edit ? "Failed to save paste" : "Failed to create paste");
+      toast.add(message, "error", 4000);
+    }
   }
 
   return (
