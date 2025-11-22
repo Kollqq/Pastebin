@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Language, Paste, Comment, Star, ViewEvent
+from .models import Language, Paste, Star, ViewEvent
 
 @admin.register(Language)
 class LanguageAdmin(admin.ModelAdmin):
@@ -12,11 +12,6 @@ class PasteAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'owner', 'visibility', 'language', 'views', 'created_at')
     list_filter = ('visibility', 'language')
     search_fields = ('title',)
-
-@admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'paste', 'author', 'created_at')
-    search_fields = ('text', 'author__username')
 
 @admin.register(Star)
 class StarAdmin(admin.ModelAdmin):

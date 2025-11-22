@@ -18,11 +18,10 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.exceptions import ValidationError
 
-from .models import Language, Paste, Comment, Star, ViewEvent
+from .models import Language, Paste, Star, ViewEvent
 from .serializers import (
     LanguageSerializer,
     PasteSerializer,
-    CommentSerializer,
     StarSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
@@ -208,22 +207,6 @@ class PasteViewSet(viewsets.ModelViewSet):
         ])
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class CommentViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
-    throttle_classes = [ScopedRateThrottle]
-    def get_throttle_scopes(self):
-        return ["pastes_read"] if self.action in ("list", "retrieve") else ["pastes_write"]
-
-    def get_queryset(self):
-        return Comment.objects.select_related("paste", "author").all()
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-
 
 
 class StarViewSet(viewsets.ModelViewSet):

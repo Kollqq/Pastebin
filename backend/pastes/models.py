@@ -60,15 +60,6 @@ class Paste(models.Model):
             self.short_code = _generate_short_code()
         super().save(*args, **kwargs)
 
-class Comment(models.Model):
-    paste = models.ForeignKey(Paste, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    text = models.TextField(max_length=2000)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['created_at']
-
 class Star(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='stars')
     paste = models.ForeignKey(Paste, on_delete=models.CASCADE, related_name='stars')

@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-from .models import Language, Paste, Comment, Star
+from .models import Language, Paste, Star
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -69,14 +69,6 @@ class PasteSerializer(serializers.ModelSerializer):
     def get_star_id(self, obj):
         star = self._get_user_star(obj)
         return star.id if star else None
-
-class CommentSerializer(serializers.ModelSerializer):
-    author_username = serializers.ReadOnlyField(source='author.username')
-
-    class Meta:
-        model = Comment
-        fields = ("id", "paste", "author", "author_username", "text", "created_at")
-        read_only_fields = ("id", "author", "author_username", "created_at")
 
 class StarSerializer(serializers.ModelSerializer):
     paste_title = serializers.ReadOnlyField(source="paste.title")
