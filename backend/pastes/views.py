@@ -103,7 +103,7 @@ class PasteViewSet(viewsets.ModelViewSet):
             if user.is_authenticated:
                 return qs.filter(
                     Q(visibility=Paste.Visibility.PUBLIC) | Q(owner=user)
-                ).filter(Q(is_removed_by_admin=False) | Q(owner=user))
+                ).filter(is_removed_by_admin=False)
             return qs.filter(visibility=Paste.Visibility.PUBLIC, is_removed_by_admin=False)
         return qs
 
@@ -239,7 +239,7 @@ class StarViewSet(viewsets.ModelViewSet):
         return (
             Star.objects
             .select_related("paste", "paste__owner", "user")
-            .filter(user=self.request.user)
+            .filter(user=self.request.user, paste__is_removed_by_admin=False)
         )
 
     def perform_create(self, serializer):
