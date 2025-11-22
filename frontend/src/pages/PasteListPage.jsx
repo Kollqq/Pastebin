@@ -191,17 +191,29 @@ export default function PasteListPage() {
         </div>
       </div>
 
+      <form onSubmit={findByCode} className="code-search-card glass-card">
+        <div className="code-search-text">
+          <h3>Jump to a paste</h3>
+          <p>Enter a short code to open a paste directly.</p>
+        </div>
+        <div className="code-search-controls">
+          <input
+            placeholder="Enter code"
+            value={codeQuery}
+            onChange={(e) => setCodeQuery(e.target.value)}
+          />
+          <button className="btn secondary" type="submit" disabled={codeSearching}>
+            {codeSearching ? "Searching..." : "Go to code"}
+          </button>
+        </div>
+      </form>
+
       <form onSubmit={applyFilters} className="filter-card glass-card">
         <div className="filter-grid">
           <input
             placeholder="Search by title"
             value={form.search}
             onChange={(e) => setForm({ ...form, search: e.target.value })}
-          />
-          <input
-            placeholder="Search by code"
-            value={codeQuery}
-            onChange={(e) => setCodeQuery(e.target.value)}
           />
           <Select
             value={form.language}
@@ -220,9 +232,6 @@ export default function PasteListPage() {
           />
           <div className="filter-actions">
             <button className="btn primary" type="submit">Apply</button>
-            <button className="btn secondary" type="button" onClick={findByCode} disabled={codeSearching}>
-              {codeSearching ? "Searching..." : "Go to code"}
-            </button>
           </div>
         </div>
       </form>

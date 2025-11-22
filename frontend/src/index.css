@@ -569,6 +569,41 @@ textarea:focus-visible {
   z-index: 100;
 }
 
+.code-search-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: clamp(18px, 4vw, 22px);
+}
+
+.code-search-text h3 {
+  margin: 0;
+}
+
+.code-search-text p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.code-search-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 260px;
+  justify-content: flex-end;
+}
+
+.code-search-controls input {
+  min-width: 220px;
+}
+
+.code-search-controls .btn {
+  white-space: nowrap;
+}
+
 .filter-grid {
   display: grid;
   gap: 16px;
@@ -824,6 +859,23 @@ textarea:focus-visible {
   justify-content: space-between;
   align-items: flex-start;
   gap: 18px;
+}
+
+.detail-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.detail-code-badge {
+  font-weight: 600;
 }
 
 .detail-meta {

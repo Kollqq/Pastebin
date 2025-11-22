@@ -112,17 +112,19 @@ export default function PasteDetailPage() {
   return (
     <section className="glass-card detail-card">
       <header className="detail-header">
-        <div>
-          <h1>{paste.title || `Paste #${paste.id}`}</h1>
+        <div className="detail-title-block">
+          <div className="detail-title-row">
+            <h1>{paste.title || `Paste #${paste.id}`}</h1>
+            {paste.short_code && (
+              <button onClick={copyCode} className="badge linkish detail-code-badge" aria-label="Copy short code">
+                {codeCopied ? "Code copied!" : `Code: ${paste.short_code}`}
+              </button>
+            )}
+          </div>
           <div className="detail-meta">
             <span>{paste.language?.name || "—"}</span>
             <span className="badge">{paste.visibility}</span>
             {paste.owner_username && <span>by {paste.owner_username}</span>}
-            {paste.short_code && (
-              <button onClick={copyCode} className="badge linkish" aria-label="Copy short code">
-                {codeCopied ? "Code copied!" : `Code: ${paste.short_code}`}
-              </button>
-            )}
           </div>
         </div>
         <div className="detail-actions">
