@@ -1,5 +1,7 @@
-from django.utils import timezone
+import hashlib
 from datetime import datetime
+
+from django.utils import timezone
 from django.db.models import Q, Count, Prefetch
 from django.db.models.functions import TruncMonth
 from django_filters import rest_framework as filters
@@ -101,6 +103,10 @@ class PasteViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
         obj.views = (obj.views or 0) + 1
         obj.save(update_fields=["views"])
+
+        ip = request.META.get("REMOTE_ADDR", "")
+        ip_hash = hashlib.sha256(ip.encode()).hexdigest() if ip else ""
+        ViewEvent.objects.create(paste=obj, ip_hash=ip_hash)
         return super().retrieve(request, *args, **kwargs)
 
     @decorators.action(detail=False, methods=["GET"], permission_classes=[AllowAny])
