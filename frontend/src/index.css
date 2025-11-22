@@ -583,7 +583,7 @@ textarea:focus-visible {
 }
 
 .code-search-text p {
-  margin: 6px 0 0;
+  margin: -6px 0 0;
   color: var(--muted);
 }
 
@@ -664,7 +664,18 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  justify-content: space-between;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.paste-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 8px;
+}
+
+.paste-card-views {
+  flex-basis: 100%;
 }
 
 .paste-card:hover {
@@ -680,7 +691,7 @@ textarea:focus-visible {
 
 .paste-card-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
@@ -870,7 +881,7 @@ textarea:focus-visible {
 .detail-title-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
 }
 

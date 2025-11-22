@@ -10,7 +10,7 @@ export default function MyPastesPage() {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
-  const pageSize = 10;
+  const pageSize = 12;
 
   async function load(nextPage = 1) {
     setLoading(true);
@@ -77,7 +77,9 @@ export default function MyPastesPage() {
                     <div className="paste-card-meta">
                       <span>{p.owner_username || "me"}</span>
                       {p.language?.name && <span>{p.language.name}</span>}
-                      {typeof p.views === "number" && <span>{p.views} views</span>}
+                      {typeof p.views === "number" && (
+                          <span className="paste-card-views">{p.views} views</span>
+                      )}
                     </div>
                   </div>
                   <span className="badge">{p.visibility}</span>
