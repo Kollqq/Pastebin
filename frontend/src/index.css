@@ -1271,3 +1271,70 @@ pre.codebox .hljs {
   margin-left: 6px;
   font-size: 0.95rem;
 }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 17, 0.68);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+.modal-card {
+  width: min(520px, 100%);
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.modal-description {
+  margin: 0;
+  color: var(--muted);
+}
+
+.modal-body {
+  margin-bottom: 18px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-input-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.modal textarea,
+.modal input,
+.modal-card textarea,
+.modal-card input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  color: var(--fg);
+  font: inherit;
+  resize: vertical;
+  min-height: 120px;
+}

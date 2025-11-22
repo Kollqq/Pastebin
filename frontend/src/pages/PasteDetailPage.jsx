@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { getPaste, deletePaste, addStar, removeStar } from "../api/pastes";
 import { useToast } from "../components/ToastProvider";
 import hljs from "highlight.js";
+import ConfirmModal from "../components/ConfirmModal.jsx";
 
 const HL_MAP = {
   python: "python", javascript: "javascript", js: "javascript",
@@ -29,6 +30,7 @@ export default function PasteDetailPage() {
   const [wrap, setWrap] = useState(false);
   const [copied, setCopied] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
   const codeRef = useRef(null);
@@ -74,10 +76,13 @@ export default function PasteDetailPage() {
   }
 
   async function remove() {
-    if (!confirm("Delete paste?")) return;
-    await deletePaste(paste.id);
-    toast.add("Paste deleted", "success");
-    navigate("/");
+    try {
+      await deletePaste(paste.id);
+      toast.add("Paste deleted", "success");
+      navigate("/");
+    } catch {
+      toast.add("Failed to delete paste", "error");
+    }
   }
 
   async function copy() {
@@ -136,7 +141,7 @@ export default function PasteDetailPage() {
           {paste.is_owner && (
             <>
               <Link to={`/edit/${paste.id}`} className="btn ghost">Edit</Link>
-              <button onClick={remove} className="btn danger" aria-label="Delete paste">Delete</button>
+              <button onClick={() => setShowDeleteConfirm(true)} className="btn danger" aria-label="Delete paste">Delete</button>
             </>
           )}
         </div>
@@ -169,6 +174,15 @@ export default function PasteDetailPage() {
       <pre className="codebox" style={{whiteSpace: wrap ? "pre-wrap" : "pre"}}>
         <code ref={codeRef}>{paste.content}</code>
       </pre>
+
+      <ConfirmModal
+        open={showDeleteConfirm}
+        title="Delete paste?"
+        description="This action cannot be undone."
+        confirmLabel="Delete"
+        onConfirm={() => remove().finally(() => setShowDeleteConfirm(false))}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </section>
   );
 }

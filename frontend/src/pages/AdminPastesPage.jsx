@@ -6,6 +6,7 @@ import Pagination from "../components/Pagination.jsx";
 import Spinner from "../components/Spinner.jsx";
 import { useToast } from "../components/ToastProvider.jsx";
 import { useSession } from "../components/SessionProvider.jsx";
+import ConfirmModal from "../components/ConfirmModal.jsx";
 
 export default function AdminPastesPage() {
   const { user } = useSession();
@@ -17,6 +18,8 @@ export default function AdminPastesPage() {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [langs, setLangs] = useState([]);
+  const [pendingRemoval, setPendingRemoval] = useState(null);
+  const [removalComment, setRemovalComment] = useState("");
 
   useEffect(() => {
     listLanguages().then((data) => setLangs(Array.isArray(data) ? data : [])).catch(() => setLangs([]));
@@ -58,16 +61,18 @@ export default function AdminPastesPage() {
     await load(1);
   }
 
-  async function removeAsAdmin(paste) {
-    const reason = window.prompt("Why are you removing this paste?", "");
-    if (reason === null) return;
+  async function confirmAdminRemoval() {
+    if (!pendingRemoval) return;
     try {
-      const updated = await adminRemovePaste(paste.id, reason);
-      setItems((prev) => prev.map((p) => (p.id === paste.id ? updated : p)));
+      const updated = await adminRemovePaste(pendingRemoval.id, removalComment);
+      setItems((prev) => prev.map((p) => (p.id === pendingRemoval.id ? updated : p)));
       toast.add("Paste removed for the user", "success");
     } catch (err) {
       console.error(err);
       toast.add("Failed to remove paste", "error");
+    } finally {
+      setPendingRemoval(null);
+      setRemovalComment("");
     }
   }
 
@@ -163,7 +168,15 @@ export default function AdminPastesPage() {
                 <div className="paste-card-actions">
                   <Link to={`/pastes/${p.id}`} className="btn secondary">Open</Link>
                   {!p.is_removed_by_admin && (
-                    <button onClick={() => removeAsAdmin(p)} className="btn danger">Remove</button>
+                    <button
+                      onClick={() => {
+                        setPendingRemoval(p);
+                        setRemovalComment("");
+                      }}
+                      className="btn danger"
+                    >
+                      Remove
+                    </button>
                   )}
                 </div>
               </li>
@@ -172,6 +185,28 @@ export default function AdminPastesPage() {
           <Pagination page={page} totalPages={totalPages} onChange={changePage} />
         </>
       )}
+
+      <ConfirmModal
+        open={Boolean(pendingRemoval)}
+        title="Remove paste?"
+        description="Leave a note for the owner."
+        confirmLabel="Remove"
+        onConfirm={confirmAdminRemoval}
+        onCancel={() => {
+          setPendingRemoval(null);
+          setRemovalComment("");
+        }}
+      >
+        <label className="modal-input-label" htmlFor="admin-removal-comment">
+          Comment for the owner
+        </label>
+        <textarea
+          id="admin-removal-comment"
+          placeholder="Reason for removal..."
+          value={removalComment}
+          onChange={(e) => setRemovalComment(e.target.value)}
+        />
+      </ConfirmModal>
     </section>
   );
 }
