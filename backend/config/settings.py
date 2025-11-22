@@ -12,6 +12,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+try:
+    import corsheaders  # type: ignore
+    HAS_CORSHEADERS = True
+except ImportError:  # pragma: no cover - optional dependency
+    HAS_CORSHEADERS = False
+
+try:
+    import django_filters  # type: ignore
+    HAS_DJANGO_FILTERS = True
+except ImportError:  # pragma: no cover - optional dependency
+    HAS_DJANGO_FILTERS = False
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -39,13 +51,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'corsheaders',
-    'django_filters',
+    *(('corsheaders',) if HAS_CORSHEADERS else ()),
+    *(('django_filters',) if HAS_DJANGO_FILTERS else ()),
 
     'accounts',
     'pastes',
 ]
 
+
+filter_backends = [
+    "rest_framework.filters.SearchFilter",
+    "rest_framework.filters.OrderingFilter",
+]
+if HAS_DJANGO_FILTERS:
+    filter_backends.insert(0, "django_filters.rest_framework.DjangoFilterBackend")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -54,11 +73,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ),
-    "DEFAULT_FILTER_BACKENDS": (
-        "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.SearchFilter",
-        "rest_framework.filters.OrderingFilter",
-    ),
+    "DEFAULT_FILTER_BACKENDS": tuple(filter_backends),
 
     "DEFAULT_THROTTLE_CLASSES": (
         "rest_framework.throttling.AnonRateThrottle",
@@ -96,7 +111,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
+    *(('corsheaders.middleware.CorsMiddleware',) if HAS_CORSHEADERS else ()),
 ]
 
 CORS_ALLOWED_ORIGINS = [

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register, login } from "../api/auth";
+import { useSession } from "../components/SessionProvider.jsx";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ username:"", email:"", password:"" });
   const [err, setErr] = useState("");
   const navigate = useNavigate();
+  const { refresh: refreshSession } = useSession();
 
   function onChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,6 +21,7 @@ export default function RegisterPage() {
       const { access, refresh } = await login({ username: form.username, password: form.password });
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
+      await refreshSession();
       navigate("/");
     } catch (e) {
       setErr("Registration failed");

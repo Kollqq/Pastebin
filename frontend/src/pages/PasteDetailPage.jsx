@@ -50,6 +50,8 @@ export default function PasteDetailPage() {
 
   if (!paste) return <div>Not found</div>;
 
+  const adminRemoved = paste.is_removed_by_admin;
+
   async function star() {
     if (paste?.is_starred && paste?.star_id) {
       try {
@@ -139,6 +141,15 @@ export default function PasteDetailPage() {
           )}
         </div>
       </header>
+
+      {adminRemoved && (
+        <div className="admin-note" role="alert">
+          <strong>Removed by admin:</strong> {paste.admin_removal_comment || "No comment provided."}
+          {paste.admin_removed_by_username && (
+            <span className="admin-note-meta"> (by {paste.admin_removed_by_username})</span>
+          )}
+        </div>
+      )}
 
       <div className="code-toolbar">
         <div className="code-toolbar-left">

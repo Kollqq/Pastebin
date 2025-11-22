@@ -95,6 +95,11 @@ export default function MyPastesPage() {
                   <Link to={`/edit/${p.id}`} className="btn secondary">Edit</Link>
                   <Link to={`/pastes/${p.id}`} className="btn ghost">Open</Link>
                 </div>
+                {p.is_removed_by_admin && (
+                  <div className="admin-note">
+                    <strong>Removed by admin:</strong> {p.admin_removal_comment || "No comment provided"}
+                  </div>
+                )}
               </li>
             ))}
           </ul>

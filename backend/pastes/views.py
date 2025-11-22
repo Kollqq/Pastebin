@@ -4,11 +4,14 @@ from datetime import datetime
 from django.utils import timezone
 from django.db.models import Q, Count, Prefetch
 from django.db.models.functions import TruncMonth
-from django_filters import rest_framework as filters
+try:
+    from django_filters import rest_framework as filters
+except ImportError:  # pragma: no cover - optional dependency
+    filters = None
 
 from rest_framework import viewsets, mixins, permissions, decorators, status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.throttling import ScopedRateThrottle
@@ -50,8 +53,9 @@ class LanguageViewSet(
     ordering_fields = ["name", "id"]
     ordering = ["name"]
 
-class PasteFilter(filters.FilterSet):
-    created_at = filters.DateFromToRangeFilter()
+class PasteFilter(filters.FilterSet if filters else object):
+    if filters:
+        created_at = filters.DateFromToRangeFilter()
 
     class Meta:
         model = Paste
@@ -70,15 +74,15 @@ class PasteViewSet(viewsets.ModelViewSet):
             return ["pastes_read"]
         return ["pastes_write"]
 
-    filterset_class = PasteFilter
-    search_fields = ["title", "short_code"]
+    filterset_class = PasteFilter if filters else None
+    search_fields = ["title", "short_code", "owner__username"]
     ordering_fields = ["created_at", "updated_at", "views", "title"]
     ordering = ["-created_at"]
 
     def _base_queryset(self):
         return (
             Paste.objects
-            .select_related("owner", "language")
+            .select_related("owner", "language", "admin_removed_by")
             .prefetch_related(self._user_star_prefetch())
             .all()
         )
@@ -94,9 +98,13 @@ class PasteViewSet(viewsets.ModelViewSet):
         user = self.request.user
         qs = self._base_queryset()
         if self.action == "list":
+            if getattr(user, "is_staff", False):
+                return qs
             if user.is_authenticated:
-                return qs.filter(Q(visibility=Paste.Visibility.PUBLIC) | Q(owner=user))
-            return qs.filter(visibility=Paste.Visibility.PUBLIC)
+                return qs.filter(
+                    Q(visibility=Paste.Visibility.PUBLIC) | Q(owner=user)
+                ).filter(Q(is_removed_by_admin=False) | Q(owner=user))
+            return qs.filter(visibility=Paste.Visibility.PUBLIC, is_removed_by_admin=False)
         return qs
 
     def perform_create(self, serializer):
@@ -110,8 +118,14 @@ class PasteViewSet(viewsets.ModelViewSet):
         return super().retrieve(request, *args, **kwargs)
 
     def _check_access_and_track(self, obj, request):
-        if obj.visibility == Paste.Visibility.PRIVATE and obj.owner_id != request.user.id:
+        if obj.is_removed_by_admin and not (request.user.is_staff or obj.owner_id == request.user.id):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if obj.visibility == Paste.Visibility.PRIVATE and not (request.user.is_staff or obj.owner_id == request.user.id):
             return Response(status=status.HTTP_403_FORBIDDEN)
+
+        if obj.is_removed_by_admin:
+            return None
         obj.views = (obj.views or 0) + 1
         obj.save(update_fields=["views"])
 
@@ -142,7 +156,7 @@ class PasteViewSet(viewsets.ModelViewSet):
         since = timezone.now() - timezone.timedelta(hours=24)
         qs = (
             Paste.objects.select_related("owner", "language")
-            .filter(visibility=Paste.Visibility.PUBLIC, updated_at__gte=since)
+            .filter(visibility=Paste.Visibility.PUBLIC, updated_at__gte=since, is_removed_by_admin=False)
             .prefetch_related(self._user_star_prefetch())
             .order_by("-views")[:10]
         )
@@ -170,6 +184,30 @@ class PasteViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
+
+    @decorators.action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsAdminUser],
+        url_path="admin-remove",
+    )
+    def admin_remove(self, request, pk=None):
+        instance = self.get_object()
+        comment = (request.data.get("comment") or "").strip()
+        instance.is_removed_by_admin = True
+        instance.admin_removed_at = timezone.now()
+        instance.admin_removed_by = request.user
+        instance.admin_removal_comment = comment
+        instance.visibility = Paste.Visibility.PRIVATE
+        instance.save(update_fields=[
+            "is_removed_by_admin",
+            "admin_removed_at",
+            "admin_removed_by",
+            "admin_removal_comment",
+            "visibility",
+        ])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CommentViewSet(viewsets.ModelViewSet):

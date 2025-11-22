@@ -2,15 +2,17 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "./ThemeProvider";
 import Select from "./Select.jsx";
+import { useSession } from "./SessionProvider.jsx";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const isAuth = !!localStorage.getItem("access");
+  const { user, logout } = useSession();
   const { theme, setTheme } = useTheme();
 
-  function logout() {
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
+  const isAuth = !!user;
+
+  function handleLogout() {
+    logout();
     navigate("/login");
   }
 
@@ -27,6 +29,7 @@ export default function Navbar() {
         {isAuth && <Link to="/stats" className="nav-link">Stats</Link>}
         {isAuth && <Link to="/my-pastes" className="nav-link">My pastes</Link>}
         {isAuth && <Link to="/stars" className="nav-link">Stars</Link>}
+        {user?.is_staff && <Link to="/admin/pastes" className="nav-link">Admin</Link>}
       </nav>
 
       <div className="navbar-actions">
@@ -51,7 +54,7 @@ export default function Navbar() {
             <Link to="/register" className="btn primary">Sign up</Link>
           </div>
         ) : (
-          <button onClick={logout} className="btn primary">Logout</button>
+          <button onClick={handleLogout} className="btn primary">Logout</button>
         )}
       </div>
     </header>

@@ -29,6 +29,11 @@ export const deletePaste = async (id) => {
   await api.delete(`/pastes/${id}/`);
 };
 
+export const adminRemovePaste = async (id, comment = "") => {
+  const { data } = await api.post(`/pastes/${id}/admin-remove/`, { comment });
+  return data;
+};
+
 export const listLanguages = async () => {
   const { data } = await api.get("/languages/");
   return Array.isArray(data) ? data : (data?.results ?? []);

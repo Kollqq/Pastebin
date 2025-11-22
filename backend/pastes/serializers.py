@@ -18,6 +18,7 @@ class PasteSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     is_starred = serializers.SerializerMethodField()
     star_id = serializers.SerializerMethodField()
+    admin_removed_by_username = serializers.ReadOnlyField(source='admin_removed_by.username')
 
     class Meta:
         model = Paste
@@ -26,10 +27,12 @@ class PasteSerializer(serializers.ModelSerializer):
             "visibility", "expire_at", "views",
             "owner", "owner_username", "created_at", "updated_at",
             "is_owner", "is_starred", "star_id",
+            "is_removed_by_admin", "admin_removed_at", "admin_removed_by", "admin_removed_by_username", "admin_removal_comment",
         )
         read_only_fields = (
             "id", "short_code", "views", "owner", "owner_username", "created_at", "updated_at", "language",
             "is_owner", "is_starred", "star_id",
+            "is_removed_by_admin", "admin_removed_at", "admin_removed_by", "admin_removed_by_username", "admin_removal_comment",
         )
 
     def validate_title(self, value):

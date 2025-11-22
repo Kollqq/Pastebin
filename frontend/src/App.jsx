@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import TrendingPage from "./pages/TrendingPage";
 import StatsPage from "./pages/StatsPage";
 import NotFound from "./pages/NotFound.jsx";
+import AdminPastesPage from "./pages/AdminPastesPage.jsx";
 
 export default function App() {
   return (
@@ -55,6 +56,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <StarsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/pastes"
+              element={
+                <ProtectedRoute>
+                  <AdminPastesPage />
                 </ProtectedRoute>
               }
             />

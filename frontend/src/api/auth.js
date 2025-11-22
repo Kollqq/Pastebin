@@ -14,3 +14,8 @@ export async function refresh(refreshToken) {
   const { data } = await api.post("/auth/token/refresh/", { refresh: refreshToken });
   return data;
 }
+
+export async function getCurrentUser() {
+  const { data } = await api.get("/auth/me/");
+  return data;
+}

@@ -36,6 +36,16 @@ class Paste(models.Model):
     visibility = models.CharField(max_length=8, choices=Visibility.choices, default=Visibility.PUBLIC)
     expire_at = models.DateTimeField(null=True, blank=True)
     views = models.PositiveIntegerField(default=0)
+    is_removed_by_admin = models.BooleanField(default=False)
+    admin_removed_at = models.DateTimeField(null=True, blank=True)
+    admin_removed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="removed_pastes",
+    )
+    admin_removal_comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
