@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { getMonthlyStats } from "../api/pastes";
 import Spinner from "../components/Spinner";
@@ -107,6 +108,9 @@ function StatsTooltip({ active, payload, label }){
 }
 
 export default function StatsPage(){
+  const navigate = useNavigate();
+  const isAuth = !!localStorage.getItem("access");
+
   const endDefault = dayjs();
   const startDefault = endDefault.subtract(5, "month");
 
@@ -127,9 +131,19 @@ export default function StatsPage(){
     }finally{ setLoading(false); }
   }
 
-  useEffect(()=>{ load(); }, []);
+  useEffect(() => {
+       if (!isAuth) {
+         navigate("/login");
+         return;
+       }
+       load();
+  }, [isAuth, navigate]);
 
   function onSubmit(e){ e.preventDefault(); load(); }
+
+  if (!isAuth) {
+       return null; // сейчас уже уходим на /login
+  }
 
   return (
     <section className="page">

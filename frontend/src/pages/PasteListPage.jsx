@@ -49,6 +49,11 @@ export default function PasteListPage() {
   const [codeQuery, setCodeQuery] = useState("");
   const [codeSearching, setCodeSearching] = useState(false);
 
+  function formatTitle(paste) {
+    const base = paste.title || `Paste #${paste.id}`;
+    return base.length > 10 ? base.slice(0, 10) + "..." : base;
+  }
+
   useEffect(() => {
     listLanguages()
       .then((data) => setLangs(Array.isArray(data) ? data : []))
@@ -249,7 +254,7 @@ export default function PasteListPage() {
               <li key={p.id} className="paste-card glass-card">
                 <div className="paste-card-header">
                   <Link to={`/pastes/${p.id}`} className="paste-card-title">
-                    {p.title || `Paste #${p.id}`}
+                    {formatTitle(p)}
                   </Link>
                   <span className="badge">{p.visibility}</span>
                 </div>

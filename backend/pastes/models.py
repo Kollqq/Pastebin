@@ -30,7 +30,7 @@ class Paste(models.Model):
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='pastes')
     short_code = models.CharField(max_length=12, unique=True, editable=False)
-    title = models.CharField(max_length=120, blank=True)
+    title = models.CharField(max_length=20, blank=True)
     content = models.TextField()
     language = models.ForeignKey(Language, null=True, blank=True, on_delete=models.SET_NULL)
     visibility = models.CharField(max_length=8, choices=Visibility.choices, default=Visibility.PUBLIC)

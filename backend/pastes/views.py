@@ -41,7 +41,9 @@ class LanguageViewSet(
     permission_classes = [AllowAny]
 
     throttle_classes = [ScopedRateThrottle]
-    throttle_scope = "pastes_read"  # lightweight public reads
+    throttle_scope = "pastes_read"
+
+    pagination_class = None
 
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["name", "slug"]

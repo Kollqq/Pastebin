@@ -24,7 +24,7 @@ export default function Navbar() {
       <nav className="navbar-links" aria-label="Primary">
         <Link to="/" className="nav-link">Pastes</Link>
         <Link to="/trending" className="nav-link">Trending</Link>
-        <Link to="/stats" className="nav-link">Stats</Link>
+        {isAuth && <Link to="/stats" className="nav-link">Stats</Link>}
         {isAuth && <Link to="/my-pastes" className="nav-link">My pastes</Link>}
         {isAuth && <Link to="/stars" className="nav-link">Stars</Link>}
       </nav>

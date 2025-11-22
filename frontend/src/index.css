@@ -940,6 +940,14 @@ pre.codebox .hljs {
   color: var(--hl-text);
 }
 
+.hljs-subst {
+  color: var(--hl-text);
+}
+
+.hljs-params {
+  color: var(--hl-text);
+}
+
 .hljs-comment,
 .hljs-quote { color: var(--hl-muted); font-style: italic; }
 
@@ -968,6 +976,10 @@ pre.codebox .hljs {
 .hljs-template-variable,
 .hljs-variable,
 .hljs-attr { color: var(--hl-property); }
+
+.hljs-regexp {
+  color: var(--hl-string);
+}
 
 .pagination {
   display: flex;

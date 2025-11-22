@@ -5,6 +5,12 @@ import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
 
 export default function MyPastesPage() {
+
+  function formatTitle(paste) {
+    const base = paste.title || `Paste #${paste.id}`;
+    return base.length > 10 ? base.slice(0, 10) + "..." : base;
+  }
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState([]);
   const [count, setCount] = useState(0);
@@ -72,7 +78,7 @@ export default function MyPastesPage() {
                 <div className="paste-card-header">
                   <div className="paste-card-header-text">
                     <Link to={`/pastes/${p.id}`} className="paste-card-title">
-                      {p.title || `Paste #${p.id}`}
+                      {formatTitle(p)}
                     </Link>
                     <div className="paste-card-meta">
                       <span>{p.owner_username || "me"}</span>
