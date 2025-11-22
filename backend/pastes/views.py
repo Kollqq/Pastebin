@@ -75,7 +75,7 @@ class PasteViewSet(viewsets.ModelViewSet):
         return ["pastes_write"]
 
     filterset_class = PasteFilter if filters else None
-    search_fields = ["title", "short_code", "owner__username"]
+    search_fields = ["title"]
     ordering_fields = ["created_at", "updated_at", "views", "title"]
     ordering = ["-created_at"]
 

@@ -110,7 +110,7 @@ export default function AdminPastesPage() {
       <form onSubmit={applyFilters} className="filter-card glass-card">
         <div className="filter-grid">
           <input
-            placeholder="Search by title, short code, or username"
+            placeholder="Search by title"
             value={form.search}
             onChange={(e) => setForm({ ...form, search: e.target.value })}
           />
