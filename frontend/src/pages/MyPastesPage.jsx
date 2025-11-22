@@ -88,18 +88,13 @@ export default function MyPastesPage() {
                       )}
                     </div>
                   </div>
-                  <span className="badge">{p.visibility}</span>
+                  <span className="badge">{p.is_removed_by_admin ? "Removed" : p.visibility}</span>
                 </div>
 
                 <div className="paste-card-actions">
                   <Link to={`/edit/${p.id}`} className="btn secondary">Edit</Link>
                   <Link to={`/pastes/${p.id}`} className="btn ghost">Open</Link>
                 </div>
-                {p.is_removed_by_admin && (
-                  <div className="admin-note">
-                    <strong>Removed by admin:</strong> {p.admin_removal_comment || "No comment provided"}
-                  </div>
-                )}
               </li>
             ))}
           </ul>
