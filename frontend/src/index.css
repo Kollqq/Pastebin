@@ -914,6 +914,8 @@ pre.codebox .hljs {
   gap: 16px;
   padding: clamp(20px, 4vw, 28px);
   align-items: flex-end;
+  position: relative;
+  z-index: 1;
 }
 
 .month-picker {
@@ -976,7 +978,7 @@ pre.codebox .hljs {
   padding: 14px 16px 16px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
-  background: var(--card);
+  background: var(--card-solid);
   box-shadow: var(--shadow);
   z-index: 20;
 }
