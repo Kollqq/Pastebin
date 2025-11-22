@@ -149,11 +149,11 @@ export default function AdminPastesPage() {
                     <div className="paste-card-meta">
                       <span>{p.owner_username || "unknown"}</span>
                       {p.language?.name && <span>{p.language.name}</span>}
-                      <span className={`badge${p.is_removed_by_admin ? " removed" : ""}`}>
-                        {p.is_removed_by_admin ? "Removed" : p.visibility}
-                      </span>
                     </div>
                   </div>
+                  <span className={`badge${p.is_removed_by_admin ? " removed" : ""}`}>
+                    {p.is_removed_by_admin ? "Removed" : p.visibility}
+                  </span>
                 </div>
                 {p.is_removed_by_admin && (
                   <div className="admin-note">
