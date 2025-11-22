@@ -916,16 +916,180 @@ pre.codebox .hljs {
   align-items: flex-end;
 }
 
-.stats-filter label {
-  display: grid;
-  gap: 6px;
+.month-picker {
+  position: relative;
+  min-width: 240px;
+  flex: 1;
+}
+
+.month-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.month-picker-label {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.month-picker-helper {
+  color: var(--muted);
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.month-picker-trigger {
+  width: 170px;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.18), rgba(99, 102, 241, 0.12));
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  color: var(--hl-text);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.month-picker-trigger:hover,
+.month-picker-trigger:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.2);
+}
+
+.month-picker-caret {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.month-picker-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 100%;
+  padding: 14px 16px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  z-index: 20;
+}
+
+.month-picker-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.month-picker-nav button {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.month-picker-nav button:hover,
+.month-picker-nav button:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.month-picker-year {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.month-picker-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.month-pill {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--fg);
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.month-pill:hover,
+.month-pill:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 12px 26px rgba(59, 130, 246, 0.16);
+}
+
+.month-pill.active {
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.22), rgba(99, 102, 241, 0.18));
+  border-color: var(--accent);
+  color: var(--hl-text);
+  box-shadow: 0 16px 34px rgba(59, 130, 246, 0.22);
+}
+
+.month-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.month-picker .btn.subtle {
+  background: var(--accent-soft);
+  border: 1px solid transparent;
+  color: var(--accent);
+}
+
+.stats-submit {
+  align-self: center;
+  padding-inline: 20px;
 }
 
 .chart-card {
   padding: clamp(20px, 4vw, 28px);
   height: 380px;
+}
+
+.stats-tooltip {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.28);
+}
+
+.stats-tooltip-header {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.stats-tooltip dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.stats-tooltip dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stats-tooltip dd {
+  margin: 0;
+  font-weight: 700;
+  color: var(--hl-text);
 }
 
 .empty-card {
