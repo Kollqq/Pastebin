@@ -22,13 +22,13 @@ class PasteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Paste
         fields = (
-            "id", "title", "content", "language", "language_id",
+            "id", "short_code", "title", "content", "language", "language_id",
             "visibility", "expire_at", "views",
             "owner", "owner_username", "created_at", "updated_at",
             "is_owner", "is_starred", "star_id",
         )
         read_only_fields = (
-            "id", "views", "owner", "owner_username", "created_at", "updated_at", "language",
+            "id", "short_code", "views", "owner", "owner_username", "created_at", "updated_at", "language",
             "is_owner", "is_starred", "star_id",
         )
 

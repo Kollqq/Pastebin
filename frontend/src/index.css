@@ -580,6 +580,15 @@ textarea:focus-visible {
   width: 100%;
 }
 
+.filter-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-actions .btn {
+  width: 100%;
+}
+
 .page-loading {
   display: grid;
   place-items: center;
@@ -659,6 +668,13 @@ textarea:focus-visible {
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.badge.linkish {
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--accent);
 }
 
 .badge.subtle {

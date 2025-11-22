@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { listPastes, listLanguages } from "../api/pastes";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { getPasteByCode, listPastes, listLanguages } from "../api/pastes";
 import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
 import Select from "../components/Select.jsx";
+import { useToast } from "../components/ToastProvider";
 
 function toInt(v, def) {
   const n = Number(v);
@@ -13,6 +14,8 @@ function toInt(v, def) {
 export default function PasteListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const isAuth = !!localStorage.getItem("access");
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const initial = useMemo(() => ({
     search: searchParams.get("search") || "",
@@ -43,6 +46,8 @@ export default function PasteListPage() {
   const [items, setItems] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [codeQuery, setCodeQuery] = useState("");
+  const [codeSearching, setCodeSearching] = useState(false);
 
   useEffect(() => {
     listLanguages()
@@ -133,6 +138,22 @@ export default function PasteListPage() {
     });
   }
 
+  async function findByCode(e) {
+    e?.preventDefault?.();
+    const code = codeQuery.trim();
+    if (!code) return;
+    setCodeSearching(true);
+    try {
+      const data = await getPasteByCode(code);
+      navigate(`/pastes/${data.id}`);
+    } catch (err) {
+      console.error(err);
+      toast.add("Paste not found or access denied", "error");
+    } finally {
+      setCodeSearching(false);
+    }
+  }
+
   const totalPages = Math.max(1, Math.ceil(count / pageSize));
 
   const languageOptions = useMemo(
@@ -177,6 +198,11 @@ export default function PasteListPage() {
             value={form.search}
             onChange={(e) => setForm({ ...form, search: e.target.value })}
           />
+          <input
+            placeholder="Search by code"
+            value={codeQuery}
+            onChange={(e) => setCodeQuery(e.target.value)}
+          />
           <Select
             value={form.language}
             onChange={(val) => setForm({ ...form, language: val })}
@@ -192,7 +218,12 @@ export default function PasteListPage() {
             onChange={(val) => setForm({ ...form, ordering: val })}
             options={orderingOptions}
           />
-          <button className="btn primary">Apply</button>
+          <div className="filter-actions">
+            <button className="btn primary" type="submit">Apply</button>
+            <button className="btn secondary" type="button" onClick={findByCode} disabled={codeSearching}>
+              {codeSearching ? "Searching..." : "Go to code"}
+            </button>
+          </div>
         </div>
       </form>
 

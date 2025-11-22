@@ -10,6 +10,11 @@ export const getPaste = async (id) => {
   return data;
 };
 
+export const getPasteByCode = async (code) => {
+  const { data } = await api.get(`/pastes/by-code/`, { params: { code } });
+  return data;
+};
+
 export const createPaste = async (payload) => {
   const { data } = await api.post("/pastes/", payload);
   return data;

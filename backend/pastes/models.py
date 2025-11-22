@@ -1,3 +1,6 @@
+import secrets
+import string
+
 from django.db import models
 from django.conf import settings
 
@@ -11,6 +14,14 @@ class Language(models.Model):
     def __str__(self):
         return self.name
 
+def _generate_short_code(length: int = 8) -> str:
+    alphabet = string.ascii_letters + string.digits
+    while True:
+        code = ''.join(secrets.choice(alphabet) for _ in range(length))
+        if not Paste.objects.filter(short_code=code).exists():
+            return code
+
+
 class Paste(models.Model):
     class Visibility(models.TextChoices):
         PUBLIC = 'public', 'Public'
@@ -18,6 +29,7 @@ class Paste(models.Model):
         PRIVATE = 'private', 'Private'
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='pastes')
+    short_code = models.CharField(max_length=12, unique=True, editable=False)
     title = models.CharField(max_length=120, blank=True)
     content = models.TextField()
     language = models.ForeignKey(Language, null=True, blank=True, on_delete=models.SET_NULL)
@@ -32,6 +44,11 @@ class Paste(models.Model):
 
     def __str__(self):
         return self.title or f'Paste: #{self.pk}'
+
+    def save(self, *args, **kwargs):
+        if not self.short_code:
+            self.short_code = _generate_short_code()
+        super().save(*args, **kwargs)
 
 class Comment(models.Model):
     paste = models.ForeignKey(Paste, on_delete=models.CASCADE, related_name='comments')

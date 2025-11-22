@@ -69,9 +69,17 @@ class PasteViewSet(viewsets.ModelViewSet):
         return ["pastes_write"]
 
     filterset_class = PasteFilter
-    search_fields = ["title"]
+    search_fields = ["title", "short_code"]
     ordering_fields = ["created_at", "updated_at", "views", "title"]
     ordering = ["-created_at"]
+
+    def _base_queryset(self):
+        return (
+            Paste.objects
+            .select_related("owner", "language")
+            .prefetch_related(self._user_star_prefetch())
+            .all()
+        )
 
     def _user_star_prefetch(self):
         user = self.request.user
@@ -82,12 +90,7 @@ class PasteViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        qs = (
-            Paste.objects
-            .select_related("owner", "language")
-            .prefetch_related(self._user_star_prefetch())
-            .all()
-        )
+        qs = self._base_queryset()
         if self.action == "list":
             if user.is_authenticated:
                 return qs.filter(Q(visibility=Paste.Visibility.PUBLIC) | Q(owner=user))
@@ -99,6 +102,12 @@ class PasteViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         obj = self.get_object()
+        access_response = self._check_access_and_track(obj, request)
+        if access_response is not None:
+            return access_response
+        return super().retrieve(request, *args, **kwargs)
+
+    def _check_access_and_track(self, obj, request):
         if obj.visibility == Paste.Visibility.PRIVATE and obj.owner_id != request.user.id:
             return Response(status=status.HTTP_403_FORBIDDEN)
         obj.views = (obj.views or 0) + 1
@@ -107,7 +116,24 @@ class PasteViewSet(viewsets.ModelViewSet):
         ip = request.META.get("REMOTE_ADDR", "")
         ip_hash = hashlib.sha256(ip.encode()).hexdigest() if ip else ""
         ViewEvent.objects.create(paste=obj, ip_hash=ip_hash)
-        return super().retrieve(request, *args, **kwargs)
+        return None
+
+    @decorators.action(detail=False, methods=["GET"], permission_classes=[AllowAny], url_path="by-code")
+    def by_code(self, request):
+        code = (request.query_params.get("code") or "").strip()
+        if not code:
+            return Response({"detail": "code is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        obj = self._base_queryset().filter(short_code=code).first()
+        if not obj:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        access_response = self._check_access_and_track(obj, request)
+        if access_response is not None:
+            return access_response
+
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
 
     @decorators.action(detail=False, methods=["GET"], permission_classes=[AllowAny])
     def trending(self, request):

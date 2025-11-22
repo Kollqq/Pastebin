@@ -28,6 +28,7 @@ export default function PasteDetailPage() {
   const [paste, setPaste] = useState(null);
   const [wrap, setWrap] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
   const codeRef = useRef(null);
@@ -87,6 +88,16 @@ export default function PasteDetailPage() {
     }
   }
 
+  async function copyCode() {
+    try {
+      await navigator.clipboard.writeText(paste.short_code || "");
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 1200);
+    } catch {
+      toast.add("Clipboard error", "error");
+    }
+  }
+
   function download() {
     const blob = new Blob([paste.content || ""], { type: "text/plain;charset=utf-8" });
     const a = document.createElement("a");
@@ -107,6 +118,11 @@ export default function PasteDetailPage() {
             <span>{paste.language?.name || "—"}</span>
             <span className="badge">{paste.visibility}</span>
             {paste.owner_username && <span>by {paste.owner_username}</span>}
+            {paste.short_code && (
+              <button onClick={copyCode} className="badge linkish" aria-label="Copy short code">
+                {codeCopied ? "Code copied!" : `Code: ${paste.short_code}`}
+              </button>
+            )}
           </div>
         </div>
         <div className="detail-actions">
