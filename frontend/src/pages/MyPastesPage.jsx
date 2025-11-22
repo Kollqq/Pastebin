@@ -88,7 +88,9 @@ export default function MyPastesPage() {
                       )}
                     </div>
                   </div>
-                  <span className="badge">{p.is_removed_by_admin ? "Removed" : p.visibility}</span>
+                  <span className={`badge${p.is_removed_by_admin ? " removed" : ""}`}>
+                    {p.is_removed_by_admin ? "Removed" : p.visibility}
+                  </span>
                 </div>
 
                 <div className="paste-card-actions">

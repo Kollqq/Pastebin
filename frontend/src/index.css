@@ -716,6 +716,12 @@ textarea:focus-visible {
   letter-spacing: 0.04em;
 }
 
+.badge.removed {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
 .badge.linkish {
   cursor: pointer;
   border: 1px solid var(--border);
