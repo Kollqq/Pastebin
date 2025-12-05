@@ -6,10 +6,10 @@ from django.db.models import Q, Count, Prefetch
 from django.db.models.functions import TruncMonth
 try:
     from django_filters import rest_framework as filters
-except ImportError:  # pragma: no cover - optional dependency
+except ImportError:
     filters = None
 
-from rest_framework import viewsets, mixins, permissions, decorators, status
+from rest_framework import viewsets, mixins, decorators, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -212,7 +212,7 @@ class PasteViewSet(viewsets.ModelViewSet):
 class StarViewSet(viewsets.ModelViewSet):
     serializer_class = StarSerializer
     permission_classes = [IsAuthenticated]
-    http_method_names = ["get", "post", "delete"]  # PUT/PATCH are unnecessary
+    http_method_names = ["get", "post", "delete"]
 
     throttle_classes = [ScopedRateThrottle]
     def get_throttle_scopes(self):
